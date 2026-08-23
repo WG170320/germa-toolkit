@@ -31,6 +31,12 @@ svg{display:block}
 /* hazard tape — Germa signature, thin */
 .hazard{height:8px;background:repeating-linear-gradient(-45deg,var(--brand) 0 14px,#0b0b0c 14px 28px)}
 
+/* campaign banner */
+.banner{display:block;margin-top:16px;border-radius:18px;overflow:hidden;border:1px solid var(--line);
+  box-shadow:0 22px 55px -32px rgba(56,189,248,.55);line-height:0;cursor:pointer;transition:transform .1s}
+.banner:active{transform:translateY(1px)}
+.banner img{width:100%;height:auto;display:block}
+
 /* top bar */
 .top{position:sticky;top:0;z-index:20;background:rgba(11,12,15,.82);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--line)}
@@ -210,6 +216,11 @@ footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12px;line-
 
 <main class="wrap">
 
+  <!-- BANNER -->
+  <a class="banner" onclick="submitClip()">
+    <img src="./assets/banner-clip.png" alt="Clip and Earn Diamonds — post clips on TikTok, get rewarded per view">
+  </a>
+
   <!-- HERO CAMPAIGN CARD -->
   <section class="hero">
     <div class="row1">
@@ -223,9 +234,6 @@ footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12px;line-
         TikTok
       </span>
     </div>
-
-    <h1>Get paid to clip <span class="hl">Germa&nbsp;Toolkit</span></h1>
-    <p class="lead">Post TikToks about the app. Every view turns into MLBB Diamonds — cash out to your game account.</p>
 
     <div class="rate">
       <div class="big">₱1<small> / 1,000 views</small></div>
