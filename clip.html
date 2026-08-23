@@ -33,7 +33,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
 a{color:inherit;text-decoration:none}
 svg{display:block}
-.dia{width:1.3em;height:1.3em;display:inline-block;vertical-align:-.28em}
+.dia{width:1.55em;height:1.55em;display:inline-block;vertical-align:-.34em}
 
 /* hazard tape — Germa signature, thin */
 .hazard{height:8px;background:repeating-linear-gradient(-45deg,var(--brand) 0 14px,#0b0b0c 14px 28px)}
@@ -373,12 +373,15 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .wd-tier .t-peso{font-size:10.5px;color:var(--faint)}
 .wd-tier:active{transform:translateY(1px)}
 .wd-tier.dis{opacity:.32;pointer-events:none}
-.wd-methods{margin-top:14px;display:flex;gap:8px}
-.wd-m{flex:1;padding:11px 4px;border-radius:11px;border:1px solid var(--line);background:#0d0e12;color:var(--muted);
-  font-family:var(--f);font-weight:700;font-size:12px;cursor:pointer;text-align:center;white-space:nowrap}
-.wd-m.active{color:var(--text);border-color:var(--dia)}
-.wd-m.rbx.active{border-color:#fff;background:#1c1c1c;color:#fff}
-.wd-m.gc.active{border-color:#0a7cff;background:rgba(10,124,255,.16);color:#5aa8ff}
+.wd-methods{margin-top:16px;display:flex;gap:9px}
+.wd-m{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding:13px 4px;border-radius:14px;
+  border:1px solid var(--line);background:#0d0e12;color:var(--muted);cursor:pointer;
+  font-family:var(--f);font-weight:700;font-size:12px;transition:border-color .12s,background .12s}
+.wd-m .wm-ic{width:30px;height:30px;display:flex;align-items:center;justify-content:center}
+.wd-m .wm-ic svg{width:26px;height:26px}
+.wd-m.active{color:var(--text);border-color:var(--dia);background:rgba(56,189,248,.08)}
+.wd-m.rbx.active{border-color:#f2f2f2;background:rgba(255,255,255,.06);color:#fff}
+.wd-m.gc.active{border-color:#0a7cff;background:rgba(10,124,255,.12);color:#5aa8ff}
 .wd-dest{margin-top:14px}
 .wd-dest .field:first-child{margin-top:0}
 .wd-note{margin-top:14px;font-size:12.5px;color:var(--muted);background:#0d0e12;border:1px solid var(--line);
@@ -723,9 +726,18 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     <div class="modal-h"><div class="modal-t">Withdraw</div><button class="modal-x" type="button" onclick="closeModal('mWithdraw')">&times;</button></div>
     <div class="wd-bal">Balance: <b><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg> <span id="wdBal">0</span></b></div>
     <div class="wd-methods">
-      <button class="wd-m active" id="wdm-diamonds" type="button" onclick="setWdMethod('diamonds')">MLBB Diamonds</button>
-      <button class="wd-m rbx" id="wdm-roblox" type="button" onclick="setWdMethod('roblox')">Roblox</button>
-      <button class="wd-m gc" id="wdm-gcash" type="button" onclick="setWdMethod('gcash')">GCash</button>
+      <button class="wd-m active" id="wdm-diamonds" type="button" onclick="setWdMethod('diamonds')">
+        <span class="wm-ic"><svg viewBox="0 0 32 30"><use href="#dia"/></svg></span>
+        <span class="wm-lab">Diamonds</span>
+      </button>
+      <button class="wd-m rbx" id="wdm-roblox" type="button" onclick="setWdMethod('roblox')">
+        <span class="wm-ic"><svg viewBox="0 0 28 28"><rect x="1.5" y="1.5" width="25" height="25" rx="6" fill="#111417"/><g transform="rotate(9 14 14)"><rect x="8" y="8" width="12" height="12" rx="2" fill="#fff"/><rect x="12" y="12" width="4" height="4" rx=".6" fill="#111417"/></g></svg></span>
+        <span class="wm-lab">Roblox</span>
+      </button>
+      <button class="wd-m gc" id="wdm-gcash" type="button" onclick="setWdMethod('gcash')">
+        <span class="wm-ic"><svg viewBox="0 0 28 28"><rect x="1.5" y="1.5" width="25" height="25" rx="6" fill="#0a7cff"/><path d="M18.6 10.4a5.6 5.6 0 1 0 .9 5.2" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="14" cy="14" r="2.3" fill="#fff"/></svg></span>
+        <span class="wm-lab">GCash</span>
+      </button>
     </div>
     <div id="wdDest"></div>
     <div class="wd-tiers" id="wdTiers"></div>
