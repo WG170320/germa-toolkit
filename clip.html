@@ -406,15 +406,18 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .wdpage{position:fixed;inset:0;z-index:45;background:var(--bg);display:none;flex-direction:column}
 .wdpage.open{display:flex}
 .wdpage-top{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);flex:0 0 auto}
-.wdp-back{width:38px;height:38px;border-radius:11px;background:#0d0e12;border:1px solid var(--line);color:var(--text);
-  font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.wdp-back{width:40px;height:40px;border-radius:12px;background:#0d0e12;border:1px solid var(--line);color:var(--text);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.wdp-back svg{width:20px;height:20px}
+.wdp-back:active{transform:scale(.96)}
 .wdp-title{font-weight:700;font-size:18px}
-.wdpage-body{flex:1;overflow-y:auto;padding:18px 16px 40px;max-width:var(--maxw);margin:0 auto;width:100%}
-.wd-balcard{background:radial-gradient(120% 150% at 100% -20%,rgba(56,189,248,.16),transparent 55%),var(--surface);
-  border:1px solid var(--line);border-radius:16px;padding:18px;text-align:center}
-.wd-ballab{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
-.wd-balamt{margin-top:6px;font-family:var(--mono);font-weight:700;font-size:30px;color:var(--dia-hi);
-  display:flex;align-items:center;justify-content:center;gap:8px}
+.wdpage-body{flex:1;overflow-y:auto;padding:20px 16px 40px;max-width:var(--maxw);margin:0 auto;width:100%}
+.wd-balcard{background:radial-gradient(130% 150% at 50% -30%,rgba(56,189,248,.18),transparent 60%),var(--surface);
+  border:1px solid var(--line);border-radius:18px;padding:22px 18px;text-align:center}
+.wd-ballab{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.1em}
+.wd-balamt{margin-top:10px;font-family:var(--mono);font-weight:700;font-size:38px;line-height:1;color:var(--dia-hi);
+  display:flex;align-items:center;justify-content:center;gap:10px}
+.wd-bigdia{width:40px;height:40px;flex:0 0 auto}
 .wd-lab{margin-top:18px;font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
 
 /* profile setup gate — must fill this before entering Germa Creators */
@@ -526,7 +529,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
         <div class="lead">Make an original TikTok about the app, submit the link, and earn MLBB Diamonds as the views climb.</div>
 
         <div class="rate">
-          <div class="big">&#8369;1<small> / 1,000 views</small></div>
+          <div class="big">&#8369;5<small> / 1,000 views</small></div>
           <div class="paid">
             <div class="n">4,120 <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div>
             <div class="l">paid to clippers</div>
@@ -536,7 +539,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 
       <!-- KPI tiles (illustrative launch figures) -->
       <div class="kpis">
-        <div class="kpi"><div class="n yellow">&#8369;1<span style="font-size:12px;color:var(--faint);font-family:var(--f)">/1K</span></div><div class="l">Reward rate</div></div>
+        <div class="kpi"><div class="n yellow">&#8369;5<span style="font-size:12px;color:var(--faint);font-family:var(--f)">/1K</span></div><div class="l">Reward rate</div></div>
         <div class="kpi"><div class="n blue">4,120 <svg class="dia" viewBox="0 0 32 30" style="width:14px;height:14px"><use href="#dia"/></svg></div><div class="l">Paid out</div></div>
         <div class="kpi"><div class="n green">128</div><div class="l">Clippers</div></div>
         <div class="kpi"><div class="n">5</div><div class="l">Min. withdraw</div></div>
@@ -553,7 +556,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
           </div>
           <div class="vlab"><span>Views on your clip</span><b id="views">50,000</b></div>
           <input id="slider" type="range" min="1000" max="1000000" step="1000" value="50000" oninput="calc()">
-          <div class="note">&#8369;1 per 1,000 views - 1 <svg class="dia" viewBox="0 0 32 30" style="width:11px;height:11px"><use href="#dia"/></svg> &#8776; &#8369;1 - one viral clip can carry your whole week.</div>
+          <div class="note">&#8369;5 per 1,000 views - 1 <svg class="dia" viewBox="0 0 32 30" style="width:11px;height:11px"><use href="#dia"/></svg> &#8776; &#8369;1 - one viral clip can carry your whole week.</div>
         </div>
       </div>
 
@@ -730,13 +733,15 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 <!-- withdraw PAGE (full screen, not a dialog) -->
 <div id="wdPage" class="wdpage">
   <div class="wdpage-top">
-    <button class="wdp-back" type="button" onclick="closeWithdraw()">&larr;</button>
+    <button class="wdp-back" type="button" onclick="closeWithdraw()" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
     <div class="wdp-title">Withdraw</div>
   </div>
   <div class="wdpage-body">
     <div class="wd-balcard">
       <div class="wd-ballab">Available to withdraw</div>
-      <div class="wd-balamt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg> <span id="wdBal">0</span></div>
+      <div class="wd-balamt"><svg class="wd-bigdia" viewBox="0 0 32 32"><use href="#dia"/></svg><span id="wdBal">0</span></div>
     </div>
     <div class="wd-lab">Payout method</div>
     <div class="wd-methods">
@@ -871,8 +876,8 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   function fmt(n){return n.toLocaleString('en-US');}
   function calc(){
     var v=+slider.value;
-    var peso=Math.round(v/1000);        // P1 per 1,000 views
-    var dia=peso;                        // 1 diamond ~ P1
+    var dia=Math.floor(v/1000)*5;       // 5 diamonds per 1,000 views (P5)
+    var peso=dia;                        // 1 diamond ~ P1
     pesoEl.textContent='₱'+fmt(peso);
     diaEl.textContent=fmt(dia);
     dockDia.textContent=fmt(dia);
@@ -970,7 +975,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     el.innerHTML=list.map(function(s){
       var thumb=s.cover ? '<img class="sub-thumb" src="'+esc(s.cover)+'" alt="">' : '<div class="sub-thumb ph">TT</div>';
       var views=(s.views||0).toLocaleString('en-US');
-      var est=Math.floor((s.views||0)/1000);
+      var est=Math.floor((s.views||0)/1000)*5;
       // views + earnings are always visible; the rest of the video info opens on tap
       var earn = s.status==='approved'
         ? '<span class="amt">'+diaSvg()+(s.diamonds||0)+'</span>'
@@ -1215,7 +1220,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     var thumb=s.cover ? '<img class="cd-thumb" src="'+esc(s.cover)+'" alt="">' : '<div class="cd-thumb ph">TikTok clip</div>';
     var date=s.submittedTs ? new Date(s.submittedTs).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : '-';
     var name=esc(s.tiktokNick || s.tiktokUser || 'TikTok clip');
-    var est=Math.floor((s.views||0)/1000);
+    var est=Math.floor((s.views||0)/1000)*5;
     var payout = s.status==='approved' ? (s.diamonds||0) : (s.status==='pending'? est : 0);
     var payLabel = s.status==='approved' ? 'Earned' : (s.status==='pending'?'Est. payout':'Payout');
     var earnLine='';
