@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Germa Clipping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+  href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#0B0C0F; --surface:#15171C; --surface2:#1C1F26; --line:#282C34;
+  --text:#F3F5F8; --muted:#9AA1AC; --faint:#6B7280;
+  --brand:#FFD400; --brand-hi:#FFE85C; --brand-deep:#B79400;
+  --dia:#38BDF8; --dia-hi:#7DD3FC; --dia-deep:#0EA5E9;
+  --good:#34D399; --tik:#ffffff;
+  --f: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'Space Mono', ui-monospace, monospace;
+  --maxw: 680px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--f);line-height:1.5;
+  padding-bottom:96px;overflow-x:hidden}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+a{color:inherit;text-decoration:none}
+svg{display:block}
+.dia{width:1em;height:1em;display:inline-block;vertical-align:-.14em}
+
+/* hazard tape — Germa signature, thin */
+.hazard{height:8px;background:repeating-linear-gradient(-45deg,var(--brand) 0 14px,#0b0b0c 14px 28px)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(11,12,15,.82);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:10px;height:56px}
+.top img{width:26px;height:26px;object-fit:contain}
+.top .name{font-weight:700;letter-spacing:.02em}
+.top .name b{color:var(--brand)}
+.top .spacer{flex:1}
+.top .tag{font-size:11px;font-weight:600;color:var(--muted);border:1px solid var(--line);
+  padding:5px 10px;border-radius:20px}
+
+/* campaign hero card */
+.hero{margin-top:18px;background:
+  radial-gradient(120% 130% at 92% -10%,rgba(255,212,0,.14),transparent 52%),
+  linear-gradient(180deg,var(--surface),#101216);
+  border:1px solid var(--line);border-radius:22px;padding:20px;position:relative;overflow:hidden}
+.hero .row1{display:flex;align-items:center;gap:11px}
+.hero .av{width:46px;height:46px;border-radius:13px;background:#0d0e12;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.hero .av img{width:34px;height:34px;object-fit:contain}
+.hero .who{min-width:0}
+.hero .who .t{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px}
+.live{font-size:9.5px;font-weight:700;letter-spacing:.09em;color:var(--good);
+  background:rgba(52,211,153,.13);border:1px solid rgba(52,211,153,.32);padding:2px 7px;border-radius:20px;
+  display:inline-flex;align-items:center;gap:5px}
+.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--good);
+  box-shadow:0 0 8px var(--good)}
+.hero .who .s{font-size:12.5px;color:var(--muted)}
+.chip-tik{margin-left:auto;font-size:11px;font-weight:700;color:#0b0b0c;background:#fff;
+  padding:5px 10px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;flex:0 0 auto}
+
+.hero h1{margin-top:16px;font-size:27px;line-height:1.12;font-weight:700;letter-spacing:-.01em}
+.hero h1 .hl{color:var(--brand)}
+.hero .lead{margin-top:9px;color:var(--muted);font-size:14.5px}
+
+.rate{margin-top:16px;display:flex;align-items:center;gap:12px;background:#0d0e12;
+  border:1px solid var(--line);border-radius:14px;padding:13px 15px}
+.rate .big{font-size:26px;font-weight:700;font-family:var(--mono);letter-spacing:-.02em}
+.rate .big small{font-size:13px;color:var(--muted);font-family:var(--f);font-weight:600}
+.rate .paid{margin-left:auto;text-align:right}
+.rate .paid .n{font-weight:700;color:var(--good);font-family:var(--mono)}
+.rate .paid .l{font-size:11px;color:var(--faint)}
+
+/* pool bar */
+.pool{margin-top:14px}
+.pool .lab{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:7px}
+.pool .lab b{color:var(--text);font-family:var(--mono)}
+.pool .track{height:9px;border-radius:6px;background:#0d0e12;border:1px solid var(--line);overflow:hidden}
+.pool .fill{height:100%;width:38%;border-radius:6px;
+  background:linear-gradient(90deg,var(--brand-deep),var(--brand),var(--brand-hi))}
+
+.cta{display:block;width:100%;margin-top:18px;background:var(--brand);color:#0b0b0c;
+  font-family:var(--f);font-weight:700;font-size:16px;border:none;border-radius:13px;padding:15px;
+  cursor:pointer;letter-spacing:.01em}
+.cta:active{transform:translateY(1px)}
+
+/* section */
+.sec{margin-top:34px}
+.sec .eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+.sec h2{font-size:20px;font-weight:700;margin-top:7px;letter-spacing:-.01em}
+
+/* steps */
+.steps{margin-top:16px;display:grid;gap:11px}
+.step{display:flex;gap:14px;background:var(--surface);border:1px solid var(--line);
+  border-radius:15px;padding:15px}
+.step .n{width:30px;height:30px;border-radius:9px;background:rgba(255,212,0,.12);color:var(--brand);
+  border:1px solid rgba(255,212,0,.3);display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-family:var(--mono);flex:0 0 auto}
+.step .b .t{font-weight:600;font-size:15px}
+.step .b .d{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* calculator */
+.calc{margin-top:16px;background:
+  radial-gradient(110% 120% at 100% 0,rgba(56,189,248,.12),transparent 55%),var(--surface);
+  border:1px solid var(--line);border-radius:18px;padding:20px}
+.calc .out{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap}
+.calc .out .peso{font-size:34px;font-weight:700;font-family:var(--mono);letter-spacing:-.02em}
+.calc .out .eq{color:var(--faint);font-size:15px;padding-bottom:6px}
+.calc .out .dia-amt{font-size:22px;font-weight:700;font-family:var(--mono);color:var(--dia-hi);
+  display:inline-flex;align-items:center;gap:6px;padding-bottom:2px}
+.calc .vlab{margin-top:14px;display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted)}
+.calc .vlab b{color:var(--text);font-family:var(--mono);font-size:16px}
+.calc input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;margin-top:10px;
+  border-radius:6px;background:linear-gradient(90deg,var(--dia) 0%,var(--dia) 45%,#23262d 45%);outline:none}
+.calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--dia-hi);border:3px solid #0b0c0f;box-shadow:0 0 0 1px var(--dia),0 4px 10px rgba(0,0,0,.5);cursor:pointer}
+.calc input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--dia-hi);
+  border:3px solid #0b0c0f;box-shadow:0 0 0 1px var(--dia);cursor:pointer}
+.calc .note{margin-top:12px;font-size:11.5px;color:var(--faint)}
+
+/* requirements */
+.reqs{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px 16px}
+.req{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.req:last-child{border-bottom:none}
+.req .ic{flex:0 0 auto;width:20px;height:20px;border-radius:50%;margin-top:1px;display:flex;align-items:center;justify-content:center}
+.req.ok .ic{background:rgba(52,211,153,.15)}
+.req.no .ic{background:rgba(255,90,90,.14)}
+.req .txt{font-size:13.5px}
+.req .txt b{font-weight:600}
+.req .txt span{color:var(--muted)}
+
+/* leaderboard */
+.board{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.lrow{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.lrow:last-child{border-bottom:none}
+.lrow .rk{width:24px;font-weight:700;font-family:var(--mono);color:var(--faint);text-align:center}
+.lrow.top1 .rk{color:var(--brand)} .lrow.top2 .rk{color:#cbd5e1} .lrow.top3 .rk{color:#e0a37a}
+.lrow .pf{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#2a2e37,#181b21);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--muted);flex:0 0 auto}
+.lrow .nm{flex:1;min-width:0}
+.lrow .nm .h{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lrow .nm .v{font-size:11.5px;color:var(--faint)}
+.lrow .amt{font-family:var(--mono);font-weight:700;color:var(--dia-hi);display:flex;align-items:center;gap:5px}
+
+/* payout */
+.payout{margin-top:16px;background:
+  radial-gradient(100% 120% at 0 0,rgba(56,189,248,.1),transparent 55%),var(--surface);
+  border:1px solid var(--line);border-radius:18px;padding:20px}
+.payout .k{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.payout .k:last-child{border-bottom:none}
+.payout .k .kd{color:var(--muted);font-size:13.5px;flex:1}
+.payout .k .kv{font-weight:700;font-family:var(--mono);display:flex;align-items:center;gap:6px}
+
+/* faq */
+.faq{margin-top:16px;display:grid;gap:10px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 16px}
+.faq summary{font-weight:600;font-size:14.5px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--brand);font-weight:700}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin-top:10px;font-size:13.5px;color:var(--muted)}
+
+footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12px;line-height:1.7}
+
+/* sticky submit */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:30;background:linear-gradient(180deg,transparent,var(--bg) 32%);
+  padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
+.dock .inner{max-width:var(--maxw);margin:0 auto;display:flex;gap:11px;align-items:center}
+.dock .earn{font-size:12px;color:var(--muted);line-height:1.25}
+.dock .earn b{color:var(--dia-hi);font-family:var(--mono);display:flex;align-items:center;gap:5px;font-size:15px}
+.dock .btn{margin-left:auto;background:var(--brand);color:#0b0b0c;font-weight:700;font-family:var(--f);
+  border:none;border-radius:12px;padding:13px 22px;font-size:15px;cursor:pointer}
+.dock .btn:active{transform:translateY(1px)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- reusable diamond gem -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="dg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BEE9FF"/><stop offset=".5" stop-color="#4FC3F7"/><stop offset="1" stop-color="#1B9DE0"/>
+    </linearGradient>
+  </defs>
+  <symbol id="dia" viewBox="0 0 32 30">
+    <path d="M9.5 2 L22.5 2 L30 11 L16 28.5 L2 11 Z" fill="url(#dg)" stroke="#0B4F73" stroke-width="1.1"/>
+    <path d="M2 11 L30 11" stroke="#0B4F73" stroke-width="1" opacity=".55"/>
+    <path d="M9.5 2 L16 11 L22.5 2" fill="none" stroke="#0B4F73" stroke-width="1" opacity=".55"/>
+    <path d="M16 11 L16 28.5" stroke="#0B4F73" stroke-width="1" opacity=".4"/>
+    <path d="M2 11 L16 28.5 L30 11" fill="none" stroke="#ffffff" stroke-width=".7" opacity=".25"/>
+    <path d="M9.5 2 L12 6 L20 6 L22.5 2" fill="#ffffff" opacity=".18"/>
+  </symbol>
+</svg>
+
+<div class="hazard"></div>
+
+<header class="top">
+  <div class="wrap">
+    <img src="./assets/logo.png" alt="Germa">
+    <div class="name"><b>GERMA</b> Creators</div>
+    <div class="spacer"></div>
+    <div class="tag">Content Rewards</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO CAMPAIGN CARD -->
+  <section class="hero">
+    <div class="row1">
+      <div class="av"><img src="./assets/logo.png" alt=""></div>
+      <div class="who">
+        <div class="t">Germa Toolkit <span class="live">LIVE</span></div>
+        <div class="s">Clip the app · earn per view</div>
+      </div>
+      <span class="chip-tik">
+        <svg class="dia" viewBox="0 0 24 24" fill="#0b0b0c" style="width:14px;height:14px"><path d="M16.5 3c.3 2 1.6 3.6 3.5 4v2.4c-1.3 0-2.6-.4-3.5-1v6.8c0 3.2-2.6 4.9-5.1 4.4-2.9-.6-3.9-3.9-2-6 1.2-1.3 3-1.4 3.6-1.2V15c-.9-.3-1.7.3-1.6 1.2.1.9 1.3 1.3 1.9.5.2-.3.2-.6.2-1V3h3z"/></svg>
+        TikTok
+      </span>
+    </div>
+
+    <h1>Get paid to clip <span class="hl">Germa&nbsp;Toolkit</span></h1>
+    <p class="lead">Post TikToks about the app. Every view turns into MLBB Diamonds — cash out to your game account.</p>
+
+    <div class="rate">
+      <div class="big">₱1<small> / 1,000 views</small></div>
+      <div class="paid">
+        <div class="n">4,120 <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div>
+        <div class="l">paid out</div>
+      </div>
+    </div>
+
+    <div class="pool">
+      <div class="lab"><span>Reward pool</span><span><b>3,050</b> / 5,000 <svg class="dia" viewBox="0 0 32 30" style="width:12px;height:12px"><use href="#dia"/></svg> left</span></div>
+      <div class="track"><div class="fill" style="width:61%"></div></div>
+    </div>
+
+    <button class="cta" onclick="submitClip()">Submit your clip</button>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="sec">
+    <div class="eyebrow">The program</div>
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div class="b">
+        <div class="t">Make a TikTok about Germa Toolkit</div>
+        <div class="d">Skins, injects, before/after — show the app doing its thing.</div></div></div>
+      <div class="step"><div class="n">2</div><div class="b">
+        <div class="t">Post it on TikTok with #GermaToolkit</div>
+        <div class="d">TikTok only. Keep the video public so views can be counted.</div></div></div>
+      <div class="step"><div class="n">3</div><div class="b">
+        <div class="t">Submit your clip link</div>
+        <div class="d">Paste the TikTok URL here. We track its views automatically.</div></div></div>
+      <div class="step"><div class="n">4</div><div class="b">
+        <div class="t">Earn Diamonds per 1,000 views</div>
+        <div class="d">Your balance grows as the clip does. Withdraw as MLBB Diamonds.</div></div></div>
+    </div>
+  </section>
+
+  <!-- CALCULATOR -->
+  <section class="sec">
+    <div class="eyebrow">Earnings</div>
+    <h2>What could you make?</h2>
+    <div class="calc">
+      <div class="out">
+        <div class="peso" id="peso">₱50</div>
+        <div class="eq">=</div>
+        <div class="dia-amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg><span id="diaOut">50</span></div>
+      </div>
+      <div class="vlab"><span>Views on your clip</span><b id="views">50,000</b></div>
+      <input id="slider" type="range" min="1000" max="1000000" step="1000" value="50000" oninput="calc()">
+      <div class="note">₱1 per 1,000 views · 1 <svg class="dia" viewBox="0 0 32 30" style="width:11px;height:11px"><use href="#dia"/></svg> ≈ ₱1 · one viral clip can carry your whole week.</div>
+    </div>
+  </section>
+
+  <!-- REQUIREMENTS -->
+  <section class="sec">
+    <div class="eyebrow">Before you post</div>
+    <h2>Clip requirements</h2>
+    <div class="reqs">
+      <div class="req ok"><span class="ic"><svg class="dia" viewBox="0 0 24 24" style="width:12px;height:12px" fill="none" stroke="#34D399" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+        <div class="txt"><b>TikTok only.</b> <span>Other platforms are not counted for now.</span></div></div>
+      <div class="req ok"><span class="ic"><svg class="dia" viewBox="0 0 24 24" style="width:12px;height:12px" fill="none" stroke="#34D399" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+        <div class="txt"><b>Feature Germa Toolkit.</b> <span>The app should be clearly the subject of the clip.</span></div></div>
+      <div class="req ok"><span class="ic"><svg class="dia" viewBox="0 0 24 24" style="width:12px;height:12px" fill="none" stroke="#34D399" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+        <div class="txt"><b>Minimum 1,000 views.</b> <span>A clip starts earning once it clears 1K.</span></div></div>
+      <div class="req ok"><span class="ic"><svg class="dia" viewBox="0 0 24 24" style="width:12px;height:12px" fill="none" stroke="#34D399" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
+        <div class="txt"><b>Original edit.</b> <span>Your own cut. Re-uploading someone else's clip is rejected.</span></div></div>
+      <div class="req no"><span class="ic"><svg class="dia" viewBox="0 0 24 24" style="width:12px;height:12px" fill="none" stroke="#FF6A6A" stroke-width="3"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+        <div class="txt"><b>No bought or bot views.</b> <span>Fake engagement voids the clip and the payout.</span></div></div>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section class="sec">
+    <div class="eyebrow">This week</div>
+    <h2>Top clippers</h2>
+    <div class="board">
+      <div class="lrow top1"><div class="rk">1</div><div class="pf">JR</div>
+        <div class="nm"><div class="h">@jayr.clips</div><div class="v">312K views · 4 clips</div></div>
+        <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>312</div></div>
+      <div class="lrow top2"><div class="rk">2</div><div class="pf">MK</div>
+        <div class="nm"><div class="h">@mikoedits</div><div class="v">188K views · 6 clips</div></div>
+        <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>188</div></div>
+      <div class="lrow top3"><div class="rk">3</div><div class="pf">AL</div>
+        <div class="nm"><div class="h">@aleee.ml</div><div class="v">141K views · 3 clips</div></div>
+        <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>141</div></div>
+      <div class="lrow"><div class="rk">4</div><div class="pf">RZ</div>
+        <div class="nm"><div class="h">@rizzskins</div><div class="v">96K views · 2 clips</div></div>
+        <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>96</div></div>
+      <div class="lrow"><div class="rk">5</div><div class="pf">DN</div>
+        <div class="nm"><div class="h">@denverfx</div><div class="v">70K views · 5 clips</div></div>
+        <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>70</div></div>
+    </div>
+  </section>
+
+  <!-- PAYOUT -->
+  <section class="sec">
+    <div class="eyebrow">Getting paid</div>
+    <h2>Payout</h2>
+    <div class="payout">
+      <div class="k"><div class="kd">Paid in</div><div class="kv">MLBB Diamonds <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div></div>
+      <div class="k"><div class="kd">Minimum withdrawal</div><div class="kv">5 <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div></div>
+      <div class="k"><div class="kd">Sent to</div><div class="kv">Your MLBB Game ID</div></div>
+      <div class="k"><div class="kd">Rate</div><div class="kv">₱1 = 1 <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec">
+    <div class="eyebrow">Questions</div>
+    <h2>Good to know</h2>
+    <div class="faq">
+      <details><summary>How are views counted?</summary><p>We read the public view count on your submitted TikTok link and update your balance as it climbs. Only TikTok is supported right now.</p></details>
+      <details><summary>When do I get my Diamonds?</summary><p>Once your balance reaches the 5-Diamond minimum you can withdraw straight to your MLBB Game ID, same as an in-game top-up.</p></details>
+      <details><summary>Can I post more than one clip?</summary><p>Yes. Submit as many original TikToks as you want — every qualifying clip adds to your total.</p></details>
+      <details><summary>What gets a clip rejected?</summary><p>Bought or bot views, re-uploading someone else's video, or clips that aren't actually about Germa Toolkit.</p></details>
+    </div>
+  </section>
+
+  <footer>
+    Germa Creators · Content Rewards<br>
+    Not affiliated with TikTok, Mobile Legends, or Codashop.
+  </footer>
+</main>
+
+<!-- sticky submit dock -->
+<div class="dock">
+  <div class="inner">
+    <div class="earn">You could earn<br><b><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg><span id="dockDia">50</span> this clip</b></div>
+    <button class="btn" onclick="submitClip()">Submit clip</button>
+  </div>
+</div>
+
+<script>
+  var pesoEl=document.getElementById('peso'), diaEl=document.getElementById('diaOut'),
+      viewsEl=document.getElementById('views'), slider=document.getElementById('slider'),
+      dockDia=document.getElementById('dockDia');
+  function fmt(n){return n.toLocaleString('en-US');}
+  function calc(){
+    var v=+slider.value;
+    var peso=Math.round(v/1000);        // ₱1 per 1,000 views
+    var dia=peso;                        // 1 diamond ≈ ₱1
+    pesoEl.textContent='₱'+fmt(peso);
+    diaEl.textContent=fmt(dia);
+    dockDia.textContent=fmt(dia);
+    viewsEl.textContent=fmt(v);
+    var pct=(v-slider.min)/(slider.max-slider.min)*100;
+    slider.style.background='linear-gradient(90deg,var(--dia) 0%,var(--dia) '+pct+'%,#23262d '+pct+'%)';
+  }
+  function submitClip(){
+    // Native bridge hook — replaced by the app; harmless in a plain browser preview.
+    try{ if(window.GermaClip && window.GermaClip.submit){ window.GermaClip.submit(); return; } }catch(e){}
+    alert('Paste your TikTok link to submit (wired up in the app).');
+  }
+  calc();
+</script>
+</body>
+</html>
