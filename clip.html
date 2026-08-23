@@ -538,6 +538,8 @@ footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12px;line-
     network:'Could not reach the server. Check your connection and try again.'
   };
 
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+
   function statusPill(status){
     var map={pending:'Pending',approved:'Approved',rejected:'Rejected',paid:'Paid'};
     var label=map[status]||status;
@@ -560,10 +562,10 @@ footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12px;line-
     var el=document.getElementById('subList');
     if(!list || !list.length){ el.innerHTML='<div class="empty">No clips submitted yet.</div>'; return; }
     el.innerHTML=list.map(function(s){
-      var thumb=s.cover ? '<img class="sub-thumb" src="'+s.cover+'" alt="">' : '<div class="sub-thumb ph">TT</div>';
-      var name=s.tiktokNick || s.tiktokUser || 'TikTok clip';
+      var thumb=s.cover ? '<img class="sub-thumb" src="'+esc(s.cover)+'" alt="">' : '<div class="sub-thumb ph">TT</div>';
+      var name=esc(s.tiktokNick || s.tiktokUser || 'TikTok clip');
       var views=(s.views||0).toLocaleString('en-US')+' views';
-      var reason=(s.status==='rejected' && s.reason) ? '<div class="reason">'+s.reason+'</div>' : '';
+      var reason=(s.status==='rejected' && s.reason) ? '<div class="reason">'+esc(s.reason)+'</div>' : '';
       return '<div class="sub-row">'+thumb+
         '<div class="sub-info"><div class="h">'+name+'</div><div class="v">'+views+'</div>'+reason+'</div>'+
         '<div class="sub-right">'+statusPill(s.status)+
@@ -592,7 +594,7 @@ footer{margin-top:36px;text-align:center;color:var(--faint);font-size:12px;line-
     var held=(r.balance && r.balance.held) || 0;
     document.getElementById('mBal').textContent=bal.toLocaleString('en-US');
     var heldEl=document.getElementById('mHeld');
-    if(held>0){ heldEl.style.display=''; heldEl.textContent=held+' more pending review'; }
+    if(held>0){ heldEl.style.display=''; heldEl.textContent=held+' pending withdrawal'; }
     else{ heldEl.style.display='none'; }
     var btn=document.getElementById('btnWithdraw');
     btn.textContent='Withdraw (min '+CFG.minWithdraw+')';
