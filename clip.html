@@ -268,6 +268,9 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .sub-info .h{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sub-info .v{font-size:11.5px;color:var(--faint);margin-top:2px}
 .sub-info .reason{font-size:11px;color:#FF8A8A;margin-top:2px}
+.sub-info .earn{font-size:11px;margin-top:2px}
+.sub-info .earn.on{color:var(--good)}
+.sub-info .earn.off{color:var(--faint)}
 .sub-right{flex:0 0 auto;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
 .sub-right .amt{font-family:var(--mono);font-weight:700;color:var(--dia-hi);display:flex;align-items:center;gap:5px;font-size:13px}
 
@@ -803,8 +806,17 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       var earn = s.status==='approved'
         ? '<span class="amt">'+diaSvg()+(s.diamonds||0)+'</span>'
         : (s.status==='pending' && est>0 ? '<span class="amt est">~'+diaSvg()+est+'</span>' : '');
+      var earnStatus='';
+      if(s.status==='approved'){
+        if(s.earning===true && s.earnEndsTs){
+          var daysLeft=Math.max(0,Math.ceil((s.earnEndsTs-Date.now())/86400000));
+          earnStatus='<div class="earn on">'+esc('Earning - '+daysLeft+' days left')+'</div>';
+        }else if(s.earning===false){
+          earnStatus='<div class="earn off">'+esc('Closed')+'</div>';
+        }
+      }
       return '<div class="sub-row">'+thumb+
-        '<div class="sub-info"><div class="h">'+name+'</div><div class="v">'+meta+'</div>'+reason+'</div>'+
+        '<div class="sub-info"><div class="h">'+name+'</div><div class="v">'+meta+'</div>'+earnStatus+reason+'</div>'+
         '<div class="sub-right">'+statusPill(s.status)+earn+'</div></div>';
     }).join('');
   }
