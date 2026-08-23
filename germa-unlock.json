@@ -1,0 +1,14 @@
+{
+  "enabled": false,
+  "temu_link": "",
+  "temu_invite_link": "",
+  "temu_invite_link_2": "",
+  "temu_package": "com.einnovation.temu",
+  "gearup_link": "",
+  "gearup_package": "com.gearup.booster",
+  "promo_code": "WARLITO",
+  "wait_temu_register": 10,
+  "wait_temu_accept": 10,
+  "wait_gearup_redeem": 8,
+  "wait_gearup_promo": 8
+}
