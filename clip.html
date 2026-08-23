@@ -385,6 +385,25 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   border-radius:11px;padding:11px 13px}
 .wd-note b{color:var(--good)}
 
+/* profile setup gate — must fill this before entering Germa Creators */
+.gate{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:24px;
+  overflow-y:auto;background:
+  radial-gradient(120% 70% at 50% -5%,rgba(255,212,0,.12),transparent 55%),
+  radial-gradient(90% 60% at 100% 105%,rgba(56,189,248,.10),transparent 55%),var(--bg)}
+.gate-inner{width:100%;max-width:400px;text-align:center;padding:8px 0}
+.gate-logo{width:74px;height:74px;margin:0 auto;border-radius:20px;background:#0d0e12;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 18px 50px -24px rgba(255,212,0,.5)}
+.gate-logo img{width:48px;height:48px;object-fit:contain}
+.gate-brand{margin-top:14px;font-weight:700;letter-spacing:.03em;color:var(--muted);font-size:14px}
+.gate-brand b{color:var(--brand)}
+.gate-h{margin-top:16px;font-size:24px;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.gate-h .hl{color:var(--brand)}
+.gate-sub{margin-top:11px;color:var(--muted);font-size:14px;line-height:1.55}
+.gate .field{margin-top:16px;text-align:left}
+.gate .cta{margin-top:20px}
+.gate-foot{margin-top:14px;font-size:12px;color:var(--faint)}
+.gate-foot .dia{opacity:.8}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -560,8 +579,6 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
         <div class="mb-amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg><span id="mBal">0</span></div>
         <div class="mb-lab">Diamonds available</div>
         <div class="mb-held" id="mHeld" style="display:none"></div>
-        <button class="cta" id="btnWithdraw" onclick="openWithdraw()" disabled>Withdraw (min 5)</button>
-        <div class="msg" id="withdrawMsg"></div>
       </div>
 
       <button class="cta" style="margin-top:14px" onclick="goSubmit()">Submit a clip</button>
@@ -716,6 +733,21 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   </div>
 </div>
 
+<!-- profile setup gate (must fill before entering) -->
+<div id="profileGate" class="gate">
+  <div class="gate-inner">
+    <div class="gate-logo"><img src="./assets/logo.png" alt=""></div>
+    <div class="gate-brand"><b>GERMA</b> Creators</div>
+    <h2 class="gate-h">Set up your <span class="hl">creator profile</span></h2>
+    <p class="gate-sub">Rewards go straight to your Mobile Legends account. Enter your Game ID and Server to get in.</p>
+    <div class="field"><label>MLBB Game ID</label><input id="gId" type="text" inputmode="numeric" placeholder="e.g. 123456789"></div>
+    <div class="field"><label>Server (zone ID)</label><input id="gServer" type="text" inputmode="numeric" placeholder="e.g. 2001"></div>
+    <button class="cta" type="button" onclick="saveProfileGate()">Enter Germa Creators</button>
+    <div class="msg" id="gateMsg"></div>
+    <div class="gate-foot">Editable once a week. Paid in MLBB Diamonds <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div>
+  </div>
+</div>
+
 <script>
   /* ---------- tab console ---------- */
   var TABS=['earn','clips','tasks','board','guide'];
@@ -740,6 +772,22 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       if(a) a.value=PROF.mlbbId||''; if(b) b.value=PROF.server||''; }
     clearMsg('profileMsg');
     openModal('mProfile');
+  }
+  // Full-screen setup gate: shown until the clipper has a verified MLBB profile.
+  function showGate(on){ var g=document.getElementById('profileGate'); if(g){ g.style.display=on?'flex':'none'; document.body.style.overflow=on?'hidden':''; } }
+  async function saveProfileGate(){
+    var id=document.getElementById('gId').value.trim();
+    var server=document.getElementById('gServer').value.trim();
+    clearMsg('gateMsg');
+    if(!id||!server){ showMsg('gateMsg','Enter both your Game ID and Server.','err'); return; }
+    showMsg('gateMsg','Checking your account...','info');
+    var r=await api('germaClipProfile',{mlbbId:id,server:server});
+    if(r&&r.ok){ showMsg('gateMsg','Welcome, '+r.ign+'!','ok'); await refreshMine(); setTimeout(function(){ showGate(false); },700); }
+    else{
+      var err=r&&r.error;
+      if(err==='cooldown'){ var days=r.days!=null?r.days:'a few'; showMsg('gateMsg','You can change your profile again in '+days+' day(s).','err'); }
+      else showMsg('gateMsg', PROFILE_ERR[err]||'Could not verify that profile. Try again.','err');
+    }
   }
   function goSubmit(){
     if(!PROF){ openProfile(); showMsg('profileMsg','Set up your payout profile first, then submit.','info'); return; }
@@ -925,6 +973,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   function renderMine(r){
     if(r.cfg && r.cfg.minWithdraw) CFG.minWithdraw=r.cfg.minWithdraw;
     renderProfileCard(r.profile);
+    showGate(!(r.profile && r.profile.ign)); // must set up profile before entering
     var bal=(r.balance && r.balance.balance) || 0;
     BAL=bal;
     var eb=document.getElementById('earnBal'); if(eb) eb.textContent=bal.toLocaleString('en-US');
@@ -935,9 +984,6 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     var heldEl=document.getElementById('mHeld');
     if(held>0){ heldEl.style.display=''; heldEl.textContent=held+' pending withdrawal'; }
     else{ heldEl.style.display='none'; }
-    var btn=document.getElementById('btnWithdraw');
-    btn.textContent='Withdraw (min '+CFG.minWithdraw+')';
-    btn.disabled = bal < CFG.minWithdraw;
     var subs=r.submissions||[];
     // clipper analytics
     var totalViews = (r.balance && r.balance.totalViews!=null)
