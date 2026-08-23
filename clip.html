@@ -181,6 +181,13 @@ svg{display:block}
 .lrow .nm .h{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lrow .nm .v{font-size:11.5px;color:var(--faint)}
 .lrow .amt{font-family:var(--mono);font-weight:700;color:var(--dia-hi);display:flex;align-items:center;gap:5px}
+.lb-medal{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-weight:700;font-size:12px;color:#0b0b0c;flex:0 0 auto}
+.lrow.top1 .lb-medal{background:linear-gradient(135deg,#FFE85C,#B79400)}
+.lrow.top2 .lb-medal{background:linear-gradient(135deg,#eef2f7,#9aa6b5)}
+.lrow.top3 .lb-medal{background:linear-gradient(135deg,#e6b489,#b9793f)}
+.lrow.top1{background:rgba(255,212,0,.05)}
+.lrow .pf{font-weight:700;font-size:13px;color:var(--muted)}
 
 /* payout */
 .payout{margin-top:14px;background:
@@ -612,27 +619,11 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   <section class="panel" id="tab-board">
     <div class="wrap">
       <div class="blk" style="margin-top:0">
-        <div class="eyebrow">This week</div>
+        <div class="eyebrow">All-time</div>
         <h2>Top clippers</h2>
       </div>
-      <div class="board">
-        <div class="lrow top1"><div class="rk">1</div><div class="pf">JR</div>
-          <div class="nm"><div class="h">@jayr.clips</div><div class="v">312K views - 4 clips</div></div>
-          <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>312</div></div>
-        <div class="lrow top2"><div class="rk">2</div><div class="pf">MK</div>
-          <div class="nm"><div class="h">@mikoedits</div><div class="v">188K views - 6 clips</div></div>
-          <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>188</div></div>
-        <div class="lrow top3"><div class="rk">3</div><div class="pf">AL</div>
-          <div class="nm"><div class="h">@aleee.ml</div><div class="v">141K views - 3 clips</div></div>
-          <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>141</div></div>
-        <div class="lrow"><div class="rk">4</div><div class="pf">RZ</div>
-          <div class="nm"><div class="h">@rizzskins</div><div class="v">96K views - 2 clips</div></div>
-          <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>96</div></div>
-        <div class="lrow"><div class="rk">5</div><div class="pf">DN</div>
-          <div class="nm"><div class="h">@denverfx</div><div class="v">70K views - 5 clips</div></div>
-          <div class="amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg>70</div></div>
-      </div>
-      <div class="note" style="margin-top:12px;font-size:11.5px;color:var(--faint)">Rankings refresh weekly. Keep posting to climb.</div>
+      <div id="lbList" class="board"><div class="empty" style="padding:22px">Loading leaderboard...</div></div>
+      <div class="note" style="margin-top:12px;font-size:11.5px;color:var(--faint)">Ranked by total Diamonds earned. Keep posting to climb.</div>
     </div>
   </section>
 
@@ -787,6 +778,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     // the persistent submit dock is a browse-time shortcut; My Clips has its own submit + dashboard
     var dock=document.querySelector('.dock');
     if(dock) dock.style.display=(name==='clips')?'none':'';
+    if(name==='board'){ loadLeaderboard(); } // refresh the board each time it is opened
     window.scrollTo({top:0,behavior:'smooth'});
   }
   var PROF=null;
@@ -1170,6 +1162,27 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     }
   }
 
+  var LB_LOADED=false;
+  function fmtViews(n){ n=n||0; if(n>=1000000) return (n/1000000).toFixed(1)+'M'; if(n>=1000) return (n/1000).toFixed(n>=100000?0:1)+'K'; return String(n); }
+  function renderLeaderboard(rows){
+    var el=document.getElementById('lbList'); if(!el) return;
+    if(!rows || !rows.length){ el.innerHTML='<div class="empty" style="padding:22px">No clippers on the board yet. Be the first to earn!</div>'; return; }
+    el.innerHTML=rows.map(function(r,i){
+      var rank=i+1, cls=rank<=3?(' top'+rank):'';
+      var initial=esc((String(r.ign||'?').trim().charAt(0)||'?').toUpperCase());
+      var badge = rank<=3 ? '<div class="lb-medal">'+rank+'</div>' : '<div class="rk">'+rank+'</div>';
+      var clips=(r.clips||0), cw=clips===1?' clip':' clips';
+      return '<div class="lrow'+cls+'">'+badge+
+        '<div class="pf">'+initial+'</div>'+
+        '<div class="nm"><div class="h">'+esc(r.ign||'Clipper')+'</div>'+
+          '<div class="v">'+fmtViews(r.totalViews)+' views - '+clips+cw+'</div></div>'+
+        '<div class="amt">'+diaSvg()+(r.totalEarned||0).toLocaleString('en-US')+'</div></div>';
+    }).join('');
+  }
+  async function loadLeaderboard(){
+    var r=await api('germaClipLeaderboard',{});
+    renderLeaderboard((r&&r.ok&&r.rows)||[]);
+  }
   function findSub(id){ for(var i=0;i<SUBS.length;i++){ if(SUBS[i].id===id) return SUBS[i]; } return null; }
   function openTk(id){ var s=findSub(id); if(!s||!s.url) return; try{ if(window.GermaClip&&window.GermaClip.openExternal){ window.GermaClip.openExternal(s.url); return; } }catch(e){} window.open(s.url,'_blank'); }
   function openClipDetail(id){
