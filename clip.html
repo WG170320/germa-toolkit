@@ -33,7 +33,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
 a{color:inherit;text-decoration:none}
 svg{display:block}
-.dia{width:1.55em;height:1.55em;display:inline-block;vertical-align:-.34em}
+.dia{width:1.45em;height:1.45em;display:inline-block;vertical-align:-.3em}
 
 /* hazard tape — Germa signature, thin */
 .hazard{height:8px;background:repeating-linear-gradient(-45deg,var(--brand) 0 14px,#0b0b0c 14px 28px)}
@@ -379,6 +379,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   font-family:var(--f);font-weight:700;font-size:12px;transition:border-color .12s,background .12s}
 .wd-m .wm-ic{width:30px;height:30px;display:flex;align-items:center;justify-content:center}
 .wd-m .wm-ic svg{width:26px;height:26px}
+.wd-m .wm-logo{width:28px;height:28px;border-radius:7px;object-fit:cover}
 .wd-m.active{color:var(--text);border-color:var(--dia);background:rgba(56,189,248,.08)}
 .wd-m.rbx.active{border-color:#f2f2f2;background:rgba(255,255,255,.06);color:#fff}
 .wd-m.gc.active{border-color:#0a7cff;background:rgba(10,124,255,.12);color:#5aa8ff}
@@ -407,6 +408,25 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .gate-foot{margin-top:14px;font-size:12px;color:var(--faint)}
 .gate-foot .dia{opacity:.8}
 
+/* submission rows are tappable; views + earnings always visible, details on tap */
+.sub-row{cursor:pointer}
+.sub-info .h.eye{font-weight:700;font-size:15px}
+.sub-chev{color:var(--faint);font-size:22px;line-height:1}
+/* clip detail modal */
+.cd-thumb{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;background:#0d0e12;border:1px solid var(--line)}
+.cd-thumb.ph{display:flex;align-items:center;justify-content:center;color:var(--faint);font-weight:700}
+.cd-top{margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cd-name{font-weight:700;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cd-grid{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.cd-k{background:#0d0e12;padding:12px 13px}
+.cd-k span{display:block;font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}
+.cd-k b{font-family:var(--mono);font-weight:700;font-size:15px;margin-top:3px;display:block}
+.cd-k b.dia-b{color:var(--dia-hi);display:flex;align-items:center;gap:5px}
+.cd-earn{margin-top:12px;font-size:12.5px;padding:9px 12px;border-radius:10px}
+.cd-earn.on{color:var(--good);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3)}
+.cd-earn.off{color:var(--faint);background:#0d0e12;border:1px solid var(--line)}
+.cd-reason{margin-top:12px;font-size:12.5px;color:#FF8A8A;background:rgba(255,90,90,.08);border:1px solid rgba(255,90,90,.25);border-radius:10px;padding:9px 12px}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -420,7 +440,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     </linearGradient>
   </defs>
   <symbol id="dia" viewBox="0 0 32 32">
-    <image href="./assets/diamond.png" x="0" y="0" width="32" height="32" preserveAspectRatio="xMidYMid meet"/>
+    <image href="./assets/diamond.png" x="-12" y="-13" width="57" height="57" preserveAspectRatio="xMidYMid slice"/>
   </symbol>
 </svg>
 
@@ -533,32 +553,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   <section class="panel" id="tab-clips">
     <div class="wrap">
 
-      <!-- the one active campaign this clipper is working -->
-      <div class="camp-card">
-        <div class="row1">
-          <div class="camp-ic"><img src="./assets/logo.png" alt=""></div>
-          <div class="camp-who">
-            <div class="camp-t">Germa Toolkit <span class="camp-badge">Active</span></div>
-            <div class="s">Grow the app - 1 active campaign</div>
-          </div>
-          <span class="chip-tik">
-            <svg class="dia" viewBox="0 0 24 24" fill="#0b0b0c" style="width:14px;height:14px"><path d="M16.5 3c.3 2 1.6 3.6 3.5 4v2.4c-1.3 0-2.6-.4-3.5-1v6.8c0 3.2-2.6 4.9-5.1 4.4-2.9-.6-3.9-3.9-2-6 1.2-1.3 3-1.4 3.6-1.2V15c-.9-.3-1.7.3-1.6 1.2.1.9 1.3 1.3 1.9.5.2-.3.2-.6.2-1V3h3z"/></svg>
-            TikTok
-          </span>
-        </div>
-        <div class="camp-meta">
-          <div class="cm"><span>Reward</span><b>&#8369;1 / 1K views</b></div>
-          <div class="cm"><span>Upload on</span><b>TikTok only</b></div>
-          <div class="cm"><span>Clips allowed</span><b>Unlimited</b></div>
-          <div class="cm"><span>Min. payout</span><b>5 <svg viewBox="0 0 32 30"><use href="#dia"/></svg></b></div>
-        </div>
-        <div class="pool">
-          <div class="lab"><span>Reward pool</span><span><b>3,050</b> / 5,000 <svg class="dia" viewBox="0 0 32 30" style="width:12px;height:12px"><use href="#dia"/></svg> left</span></div>
-          <div class="track"><div class="fill" style="width:61%"></div></div>
-        </div>
-      </div>
-
-      <!-- clipper profile (identity only; setup/edit opens a modal) -->
+      <!-- clipper profile at the very top (identity + avatar; edit opens a modal) -->
       <div id="profileCard" class="prof empty" onclick="openProfile()">
         <div class="prof-av ph">+</div>
         <div class="prof-b">
@@ -731,17 +726,25 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
         <span class="wm-lab">Diamonds</span>
       </button>
       <button class="wd-m rbx" id="wdm-roblox" type="button" onclick="setWdMethod('roblox')">
-        <span class="wm-ic"><svg viewBox="0 0 28 28"><rect x="1.5" y="1.5" width="25" height="25" rx="6" fill="#111417"/><g transform="rotate(9 14 14)"><rect x="8" y="8" width="12" height="12" rx="2" fill="#fff"/><rect x="12" y="12" width="4" height="4" rx=".6" fill="#111417"/></g></svg></span>
+        <span class="wm-ic"><img class="wm-logo" src="./assets/roblox.jpg" alt="Roblox"></span>
         <span class="wm-lab">Roblox</span>
       </button>
       <button class="wd-m gc" id="wdm-gcash" type="button" onclick="setWdMethod('gcash')">
-        <span class="wm-ic"><svg viewBox="0 0 28 28"><rect x="1.5" y="1.5" width="25" height="25" rx="6" fill="#0a7cff"/><path d="M18.6 10.4a5.6 5.6 0 1 0 .9 5.2" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="14" cy="14" r="2.3" fill="#fff"/></svg></span>
+        <span class="wm-ic"><img class="wm-logo" src="./assets/gcash.jpg" alt="GCash"></span>
         <span class="wm-lab">GCash</span>
       </button>
     </div>
     <div id="wdDest"></div>
     <div class="wd-tiers" id="wdTiers"></div>
     <div class="msg" id="withdrawMsg"></div>
+  </div>
+</div>
+
+<!-- clip detail (opens when a submission is tapped) -->
+<div class="modal" id="mClip" onclick="if(event.target===this)closeModal('mClip')">
+  <div class="modal-card">
+    <div class="modal-h"><div class="modal-t">Clip details</div><button class="modal-x" type="button" onclick="closeModal('mClip')">&times;</button></div>
+    <div id="clipBody"></div>
   </div>
 </div>
 
@@ -905,32 +908,22 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     }
   }
 
+  var SUBS=[];
   function renderSubmissions(list){
+    SUBS=list||[];
     var el=document.getElementById('subList');
     if(!list || !list.length){ el.innerHTML='<div class="empty">No clips submitted yet.</div>'; return; }
     el.innerHTML=list.map(function(s){
       var thumb=s.cover ? '<img class="sub-thumb" src="'+esc(s.cover)+'" alt="">' : '<div class="sub-thumb ph">TT</div>';
-      var name=esc(s.tiktokNick || s.tiktokUser || 'TikTok clip');
-      var date=s.submittedTs ? new Date(s.submittedTs).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
-      var views=(s.views||0).toLocaleString('en-US')+' views';
-      var meta=(date? esc(date)+' · ' : '')+views;
-      var reason=(s.status==='rejected' && s.reason) ? '<div class="reason">'+esc(s.reason)+'</div>' : '';
+      var views=(s.views||0).toLocaleString('en-US');
       var est=Math.floor((s.views||0)/1000);
+      // views + earnings are always visible; the rest of the video info opens on tap
       var earn = s.status==='approved'
         ? '<span class="amt">'+diaSvg()+(s.diamonds||0)+'</span>'
-        : (s.status==='pending' && est>0 ? '<span class="amt est">~'+diaSvg()+est+'</span>' : '');
-      var earnStatus='';
-      if(s.status==='approved'){
-        if(s.earning===true && s.earnEndsTs){
-          var daysLeft=Math.max(0,Math.ceil((s.earnEndsTs-Date.now())/86400000));
-          earnStatus='<div class="earn on">'+esc('Earning - '+daysLeft+' days left')+'</div>';
-        }else if(s.earning===false){
-          earnStatus='<div class="earn off">'+esc('Closed')+'</div>';
-        }
-      }
-      return '<div class="sub-row">'+thumb+
-        '<div class="sub-info"><div class="h">'+name+'</div><div class="v">'+meta+'</div>'+earnStatus+reason+'</div>'+
-        '<div class="sub-right">'+statusPill(s.status)+earn+'</div></div>';
+        : (s.status==='pending' && est>0 ? '<span class="amt est">~'+diaSvg()+est+'</span>' : '<span class="amt est">'+diaSvg()+'0</span>');
+      return '<div class="sub-row" onclick="openClipDetail(\''+esc(s.id)+'\')">'+thumb+
+        '<div class="sub-info"><div class="h eye">'+views+' views</div><div class="v">'+earn+'</div></div>'+
+        '<div class="sub-right">'+statusPill(s.status)+'<span class="sub-chev">&rsaquo;</span></div></div>';
     }).join('');
   }
 
@@ -1135,6 +1128,36 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       if(err==='no_profile') msg='Set up your MLBB profile first.';
       showMsg('withdrawMsg', msg, 'err');
     }
+  }
+
+  function findSub(id){ for(var i=0;i<SUBS.length;i++){ if(SUBS[i].id===id) return SUBS[i]; } return null; }
+  function openTk(id){ var s=findSub(id); if(!s||!s.url) return; try{ if(window.GermaClip&&window.GermaClip.openExternal){ window.GermaClip.openExternal(s.url); return; } }catch(e){} window.open(s.url,'_blank'); }
+  function openClipDetail(id){
+    var s=findSub(id); if(!s) return;
+    var el=document.getElementById('clipBody'); if(!el) return;
+    var thumb=s.cover ? '<img class="cd-thumb" src="'+esc(s.cover)+'" alt="">' : '<div class="cd-thumb ph">TikTok clip</div>';
+    var date=s.submittedTs ? new Date(s.submittedTs).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : '-';
+    var name=esc(s.tiktokNick || s.tiktokUser || 'TikTok clip');
+    var est=Math.floor((s.views||0)/1000);
+    var payout = s.status==='approved' ? (s.diamonds||0) : (s.status==='pending'? est : 0);
+    var payLabel = s.status==='approved' ? 'Earned' : (s.status==='pending'?'Est. payout':'Payout');
+    var earnLine='';
+    if(s.status==='approved' && s.earning===true && s.earnEndsTs){
+      var d=Math.max(0,Math.ceil((s.earnEndsTs-Date.now())/86400000));
+      earnLine='<div class="cd-earn on">Still earning - '+d+' day(s) left</div>';
+    }else if(s.status==='approved' && s.earning===false){ earnLine='<div class="cd-earn off">Earning window closed - final payout</div>'; }
+    else if(s.status==='pending'){ earnLine='<div class="cd-earn off">Pending review - estimated payout shown</div>'; }
+    var reason=(s.status==='rejected' && s.reason) ? '<div class="cd-reason">Reason: '+esc(s.reason)+'</div>' : '';
+    el.innerHTML=thumb+
+      '<div class="cd-top"><div class="cd-name">'+name+'</div>'+statusPill(s.status)+'</div>'+
+      '<div class="cd-grid">'+
+        '<div class="cd-k"><span>Submitted</span><b>'+esc(date)+'</b></div>'+
+        '<div class="cd-k"><span>Views</span><b>'+(s.views||0).toLocaleString('en-US')+'</b></div>'+
+        '<div class="cd-k"><span>'+payLabel+'</span><b class="dia-b">'+diaSvg()+payout.toLocaleString('en-US')+'</b></div>'+
+        '<div class="cd-k"><span>Platform</span><b>TikTok</b></div>'+
+      '</div>'+earnLine+reason+
+      (s.url ? '<button class="cta ghost" type="button" onclick="openTk(\''+esc(s.id)+'\')">Open on TikTok</button>' : '');
+    openModal('mClip');
   }
 
   refreshMine();
