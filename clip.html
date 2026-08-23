@@ -299,6 +299,34 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 
 .sub-right .amt.est{color:var(--faint);font-weight:400}
 
+/* clipper profile identity card */
+.prof{display:flex;align-items:center;gap:13px;margin-top:14px;background:var(--surface);
+  border:1px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;transition:border-color .12s}
+.prof:hover{border-color:#33384380}
+.prof-av{width:44px;height:44px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:18px;color:#0b0b0c;background:linear-gradient(135deg,var(--brand-hi),var(--brand-deep))}
+.prof-av.ph{background:#0d0e12;border:1px dashed #3a4048;color:var(--faint);font-weight:400;font-size:22px}
+.prof-b{flex:1;min-width:0}
+.prof-ign{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-sub{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-edit{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--dia-hi);background:rgba(56,189,248,.1);
+  border:1px solid rgba(56,189,248,.28);border-radius:9px;padding:8px 12px}
+
+/* bottom-sheet modal */
+.modal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.62)}
+.modal.open{display:flex}
+.modal-card{width:100%;max-width:var(--maxw);background:var(--surface2);border:1px solid var(--line);
+  border-radius:20px 20px 0 0;padding:22px 18px calc(24px + env(safe-area-inset-bottom));animation:sheet .22s ease}
+@keyframes sheet{from{transform:translateY(28px);opacity:.5}to{transform:none;opacity:1}}
+@media(min-width:560px){.modal{align-items:center;padding:16px}.modal-card{border-radius:20px}}
+.modal-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.modal-t{font-weight:700;font-size:18px}
+.modal-x{background:#0d0e12;border:1px solid var(--line);color:var(--muted);width:32px;height:32px;border-radius:9px;
+  font-size:19px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-sub{font-size:13px;color:var(--muted);margin-top:6px}
+.modal-card .cta{margin-top:16px}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -451,6 +479,16 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
         </div>
       </div>
 
+      <!-- clipper profile (identity only; setup/edit opens a modal) -->
+      <div id="profileCard" class="prof empty" onclick="openProfile()">
+        <div class="prof-av ph">+</div>
+        <div class="prof-b">
+          <div class="prof-ign">Set up your payout profile</div>
+          <div class="prof-sub">Add your MLBB Game ID to get paid in Diamonds</div>
+        </div>
+        <span class="prof-edit">Set up</span>
+      </div>
+
       <!-- your analytics -->
       <div class="stat3">
         <div class="kpi"><div class="n" id="aSubs">0</div><div class="l">Submissions</div></div>
@@ -466,27 +504,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
         <div class="msg" id="withdrawMsg"></div>
       </div>
 
-      <div class="mine-card" id="profileCard">
-        <div class="mc-title">MLBB profile</div>
-        <div class="mc-sub">Where your Diamonds are sent. Editable once a week.</div>
-        <div id="profileView" style="display:none">
-          <div class="ign-proof" style="margin-top:12px"><span>IGN: <b id="mIgn"></b></span><span class="edit" onclick="editProfile()">Edit</span></div>
-        </div>
-        <div id="profileForm">
-          <div class="field"><label>Game ID</label><input id="fId" type="text" inputmode="numeric" placeholder="e.g. 123456789"></div>
-          <div class="field"><label>Server (zone ID)</label><input id="fServer" type="text" inputmode="numeric" placeholder="e.g. 2001"></div>
-          <button class="cta" onclick="saveProfile()">Save profile</button>
-          <div class="msg" id="profileMsg"></div>
-        </div>
-      </div>
-
-      <div class="mine-card">
-        <div class="mc-title">Submit a clip</div>
-        <div class="mc-sub">Paste a public TikTok link. We read its views automatically.</div>
-        <div class="field"><label>TikTok URL</label><input id="fUrl" type="url" placeholder="https://www.tiktok.com/@you/video/..."></div>
-        <button class="cta" onclick="doSubmit()">Submit clip</button>
-        <div class="msg" id="submitMsg"></div>
-      </div>
+      <button class="cta" style="margin-top:14px" onclick="goSubmit()">Submit a clip</button>
 
       <div class="mc-title" style="margin-top:22px">My submissions</div>
       <div id="subList" class="sublist"><div class="empty">No clips submitted yet.</div></div>
@@ -588,6 +606,29 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   </div>
 </div>
 
+<!-- profile modal -->
+<div class="modal" id="mProfile" onclick="if(event.target===this)closeModal('mProfile')">
+  <div class="modal-card">
+    <div class="modal-h"><div class="modal-t">Payout profile</div><button class="modal-x" type="button" onclick="closeModal('mProfile')">&times;</button></div>
+    <div class="modal-sub">Where your Diamonds are sent. Editable once a week.</div>
+    <div class="field"><label>Game ID</label><input id="fId" type="text" inputmode="numeric" placeholder="e.g. 123456789"></div>
+    <div class="field"><label>Server (zone ID)</label><input id="fServer" type="text" inputmode="numeric" placeholder="e.g. 2001"></div>
+    <button class="cta" type="button" onclick="saveProfile()">Save profile</button>
+    <div class="msg" id="profileMsg"></div>
+  </div>
+</div>
+
+<!-- submit-clip modal -->
+<div class="modal" id="mSubmit" onclick="if(event.target===this)closeModal('mSubmit')">
+  <div class="modal-card">
+    <div class="modal-h"><div class="modal-t">Submit a clip</div><button class="modal-x" type="button" onclick="closeModal('mSubmit')">&times;</button></div>
+    <div class="modal-sub">Paste a public TikTok link. We read its views automatically.</div>
+    <div class="field"><label>TikTok URL</label><input id="fUrl" type="url" placeholder="https://www.tiktok.com/@you/video/..."></div>
+    <button class="cta" type="button" onclick="doSubmit()">Submit clip</button>
+    <div class="msg" id="submitMsg"></div>
+  </div>
+</div>
+
 <script>
   /* ---------- tab console ---------- */
   var TABS=['earn','clips','board','guide'];
@@ -599,12 +640,25 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       panel.classList.toggle('active',on);
       btn.classList.toggle('active',on);
     });
+    // the persistent submit dock is a browse-time shortcut; My Clips has its own submit + dashboard
+    var dock=document.querySelector('.dock');
+    if(dock) dock.style.display=(name==='clips')?'none':'';
     window.scrollTo({top:0,behavior:'smooth'});
   }
+  var PROF=null;
+  function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.add('open'); document.body.style.overflow='hidden'; } }
+  function closeModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('open'); document.body.style.overflow=''; } }
+  function openProfile(){
+    if(PROF){ var a=document.getElementById('fId'), b=document.getElementById('fServer');
+      if(a) a.value=PROF.mlbbId||''; if(b) b.value=PROF.server||''; }
+    clearMsg('profileMsg');
+    openModal('mProfile');
+  }
   function goSubmit(){
-    showTab('clips');
-    var f=document.getElementById('fUrl');
-    if(f) setTimeout(function(){ f.focus(); },300);
+    if(!PROF){ openProfile(); showMsg('profileMsg','Set up your payout profile first, then submit.','info'); return; }
+    clearMsg('submitMsg');
+    openModal('mSubmit');
+    var f=document.getElementById('fUrl'); if(f) setTimeout(function(){ f.focus(); },250);
   }
 
   /* ---------- calculator ---------- */
@@ -682,15 +736,25 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     return '<span class="pill '+status+'">'+label+'</span>';
   }
 
-  function renderProfile(profile){
-    var view=document.getElementById('profileView'), form=document.getElementById('profileForm');
+  function renderProfileCard(profile){
+    var el=document.getElementById('profileCard');
+    if(!el) return;
     if(profile && profile.ign){
-      document.getElementById('mIgn').textContent=profile.ign;
-      view.style.display='';
-      form.style.display='none';
+      PROF=profile;
+      var initial=esc((String(profile.ign).trim().charAt(0)||'?').toUpperCase());
+      var meta='MLBB ID '+esc(profile.mlbbId||'')+(profile.server?' - Server '+esc(profile.server):'');
+      el.className='prof';
+      el.innerHTML='<div class="prof-av">'+initial+'</div>'+
+        '<div class="prof-b"><div class="prof-ign">'+esc(profile.ign)+'</div>'+
+        '<div class="prof-sub">'+meta+'</div></div>'+
+        '<span class="prof-edit">Edit</span>';
     }else{
-      view.style.display='none';
-      form.style.display='';
+      PROF=null;
+      el.className='prof empty';
+      el.innerHTML='<div class="prof-av ph">+</div>'+
+        '<div class="prof-b"><div class="prof-ign">Set up your payout profile</div>'+
+        '<div class="prof-sub">Add your MLBB Game ID to get paid in Diamonds</div></div>'+
+        '<span class="prof-edit">Set up</span>';
     }
   }
 
@@ -729,7 +793,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   var CFG={minWithdraw:5};
   function renderMine(r){
     if(r.cfg && r.cfg.minWithdraw) CFG.minWithdraw=r.cfg.minWithdraw;
-    renderProfile(r.profile);
+    renderProfileCard(r.profile);
     var bal=(r.balance && r.balance.balance) || 0;
     var held=(r.balance && r.balance.held) || 0;
     document.getElementById('mBal').textContent=bal.toLocaleString('en-US');
@@ -764,11 +828,6 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     if(r && r.ok) renderMine(r);
   }
 
-  function editProfile(){
-    document.getElementById('profileView').style.display='none';
-    document.getElementById('profileForm').style.display='';
-  }
-
   async function saveProfile(){
     var id=document.getElementById('fId').value.trim();
     var server=document.getElementById('fServer').value.trim();
@@ -779,6 +838,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     if(r && r.ok){
       showMsg('profileMsg','Verified as '+r.ign+'.','ok');
       await refreshMine();
+      setTimeout(function(){ closeModal('mProfile'); },750);
     }else{
       var err=r && r.error;
       if(err==='cooldown'){
@@ -801,6 +861,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       showMsg('submitMsg','Submitted! Pending review (views: '+views+').','ok');
       document.getElementById('fUrl').value='';
       await refreshMine();
+      setTimeout(function(){ closeModal('mSubmit'); },900);
     }else{
       var err=r && r.error;
       showMsg('submitMsg', SUBMIT_ERR[err] || 'Could not submit that clip. Try again.', 'err');
