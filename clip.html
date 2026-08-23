@@ -22,11 +22,14 @@
   --maxw: 680px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;overscroll-behavior:none}
 body{background:var(--bg);color:var(--text);font-family:var(--f);line-height:1.5;
-  padding-bottom:96px;overflow-x:hidden;
+  padding-bottom:96px;overflow-x:hidden;overscroll-behavior-y:none;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-  font-variant-numeric:tabular-nums;letter-spacing:-.006em}
+  font-variant-numeric:tabular-nums;letter-spacing:-.006em;
+  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+/* keep real inputs selectable/typable even though the page suppresses selection */
+input,textarea{-webkit-user-select:text;user-select:text}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
 a{color:inherit;text-decoration:none}
 svg{display:block}
