@@ -327,6 +327,13 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .prof-av{width:44px;height:44px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
   font-weight:800;font-size:18px;color:#0b0b0c;background:linear-gradient(135deg,var(--brand-hi),var(--brand-deep))}
 .prof-av.ph{background:#0d0e12;border:1px dashed #3a4048;color:var(--faint);font-weight:400;font-size:22px}
+.prof-av{position:relative}
+.prof-av.img{background:#0d0e12}
+.av-clip{position:absolute;inset:0;border-radius:50%;overflow:hidden}
+.av-clip img{width:100%;height:100%;object-fit:cover;display:block}
+.prof-av .cam{position:absolute;right:-3px;bottom:-3px;width:19px;height:19px;border-radius:50%;background:var(--dia);
+  color:#04202e;font-size:13px;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--surface)}
 .prof-b{flex:1;min-width:0}
 .prof-ign{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .prof-sub{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -748,6 +755,9 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   </div>
 </div>
 
+<!-- hidden picker for the profile photo (WebView needs the app's file-chooser bridge) -->
+<input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="onAvatarPicked(event)">
+
 <!-- profile setup gate (must fill before entering) -->
 <div id="profileGate" class="gate">
   <div class="gate-inner">
@@ -787,6 +797,35 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       if(a) a.value=PROF.mlbbId||''; if(b) b.value=PROF.server||''; }
     clearMsg('profileMsg');
     openModal('mProfile');
+  }
+  // Profile photo: open the picker (needs the app's file-chooser), shrink to a small
+  // square thumbnail on-device, then store it on the profile.
+  function pickAvatar(e){ if(e){ e.stopPropagation(); } if(!PROF){ openProfile(); return; } var inp=document.getElementById('avatarInput'); if(inp) inp.click(); }
+  function onAvatarPicked(e){
+    var f=e.target.files && e.target.files[0]; e.target.value='';
+    if(!f) return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      var img=new Image();
+      img.onload=function(){
+        var size=160, c=document.createElement('canvas'); c.width=size; c.height=size;
+        var ctx=c.getContext('2d');
+        var scale=Math.max(size/img.width, size/img.height); // cover
+        var w=img.width*scale, h=img.height*scale;
+        ctx.drawImage(img,(size-w)/2,(size-h)/2,w,h);
+        var data;
+        try{ data=c.toDataURL('image/jpeg',0.72); }catch(err){ alert('Could not read that image.'); return; }
+        uploadAvatar(data);
+      };
+      img.onerror=function(){ alert('Could not read that image.'); };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(f);
+  }
+  async function uploadAvatar(data){
+    var r=await api('germaClipAvatar',{avatar:data});
+    if(r&&r.ok){ if(PROF){ PROF.avatar=data; renderProfileCard(PROF); } }
+    else { alert('Could not save photo'+((r&&r.error)?': '+r.error:'')); }
   }
   // Full-screen setup gate: shown until the clipper has a verified MLBB profile.
   function showGate(on){ var g=document.getElementById('profileGate'); if(g){ g.style.display=on?'flex':'none'; document.body.style.overflow=on?'hidden':''; } }
@@ -893,8 +932,9 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       PROF=profile;
       var initial=esc((String(profile.ign).trim().charAt(0)||'?').toUpperCase());
       var meta='MLBB ID '+esc(profile.mlbbId||'')+(profile.server?' - Server '+esc(profile.server):'');
+      var avInner = profile.avatar ? '<span class="av-clip"><img src="'+esc(profile.avatar)+'" alt=""></span>' : initial;
       el.className='prof';
-      el.innerHTML='<div class="prof-av">'+initial+'</div>'+
+      el.innerHTML='<div class="prof-av'+(profile.avatar?' img':'')+'" onclick="pickAvatar(event)">'+avInner+'<span class="cam">+</span></div>'+
         '<div class="prof-b"><div class="prof-ign">'+esc(profile.ign)+'</div>'+
         '<div class="prof-sub">'+meta+'</div></div>'+
         '<span class="prof-edit">Edit</span>';
