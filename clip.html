@@ -38,9 +38,9 @@ svg{display:block}
 /* hazard tape — Germa signature, thin */
 .hazard{height:8px;background:repeating-linear-gradient(-45deg,var(--brand) 0 14px,#0b0b0c 14px 28px)}
 
-/* top bar */
-.top{position:sticky;top:0;z-index:20;background:rgba(11,12,15,.82);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line)}
+/* top bar — hazard + header stick together so the yellow never scrolls away */
+.topbar{position:sticky;top:0;z-index:20;background:var(--bg)}
+.top{background:rgba(11,12,15,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;gap:10px;height:56px}
 .top img{width:26px;height:26px;object-fit:contain}
 .top .name{font-weight:700;letter-spacing:.02em}
@@ -50,7 +50,7 @@ svg{display:block}
   padding:5px 10px;border-radius:20px}
 
 /* segmented tab bar — the console spine */
-.tabs{position:sticky;top:56px;z-index:15;background:rgba(11,12,15,.9);backdrop-filter:blur(12px);
+.tabs{position:sticky;top:64px;z-index:15;background:rgba(11,12,15,.95);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--line)}
 .tabs .wrap{display:flex;gap:0;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
 .tabs .wrap::-webkit-scrollbar{display:none}
@@ -348,6 +348,32 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .modal-sub{font-size:13px;color:var(--muted);margin-top:6px}
 .modal-card .cta{margin-top:16px}
 
+/* balance strip at the top of Earn */
+.earnbal{display:flex;align-items:center;gap:12px;margin-top:2px;padding:14px 16px;border-radius:16px;
+  border:1px solid var(--line);
+  background:radial-gradient(120% 160% at 100% -30%,rgba(56,189,248,.14),transparent 60%),var(--surface)}
+.earnbal .eb-l{flex:1;min-width:0}
+.earnbal .eb-lab{font-size:10.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+.earnbal .eb-amt{font-family:var(--mono);font-weight:700;font-size:24px;color:var(--dia-hi);
+  display:flex;align-items:center;gap:7px;margin-top:3px}
+.earnbal .eb-amt svg{width:.9em;height:.9em}
+.earnbal .eb-wd{flex:0 0 auto;background:var(--brand);color:#0b0b0c;font-weight:700;font-family:var(--f);
+  border:none;border-radius:11px;padding:11px 18px;font-size:14px;cursor:pointer}
+.earnbal .eb-wd:active{transform:translateY(1px)}
+
+/* withdraw tier picker */
+.wd-bal{margin-top:14px;font-size:13px;color:var(--muted)}
+.wd-bal b{color:var(--dia-hi);font-family:var(--mono);display:inline-flex;align-items:center;gap:5px}
+.wd-bal b svg{width:14px;height:14px}
+.wd-tiers{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.wd-tier{background:#0d0e12;border:1px solid var(--line);border-radius:12px;padding:12px 6px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px}
+.wd-tier .t-dia{display:flex;align-items:center;gap:5px;color:var(--dia-hi);font-family:var(--mono);font-weight:700;font-size:15px}
+.wd-tier .t-dia svg{width:15px;height:15px}
+.wd-tier .t-peso{font-size:10.5px;color:var(--faint)}
+.wd-tier:active{transform:translateY(1px)}
+.wd-tier.dis{opacity:.32;pointer-events:none}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -360,26 +386,22 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       <stop offset="0" stop-color="#BEE9FF"/><stop offset=".5" stop-color="#4FC3F7"/><stop offset="1" stop-color="#1B9DE0"/>
     </linearGradient>
   </defs>
-  <symbol id="dia" viewBox="0 0 32 30">
-    <path d="M9.5 2 L22.5 2 L30 11 L16 28.5 L2 11 Z" fill="url(#dg)" stroke="#0B4F73" stroke-width="1.1"/>
-    <path d="M2 11 L30 11" stroke="#0B4F73" stroke-width="1" opacity=".55"/>
-    <path d="M9.5 2 L16 11 L22.5 2" fill="none" stroke="#0B4F73" stroke-width="1" opacity=".55"/>
-    <path d="M16 11 L16 28.5" stroke="#0B4F73" stroke-width="1" opacity=".4"/>
-    <path d="M2 11 L16 28.5 L30 11" fill="none" stroke="#ffffff" stroke-width=".7" opacity=".25"/>
-    <path d="M9.5 2 L12 6 L20 6 L22.5 2" fill="#ffffff" opacity=".18"/>
+  <symbol id="dia" viewBox="0 0 32 32">
+    <image href="./assets/diamond.png" x="0" y="0" width="32" height="32" preserveAspectRatio="xMidYMid meet"/>
   </symbol>
 </svg>
 
-<div class="hazard"></div>
-
-<header class="top">
-  <div class="wrap">
-    <img src="./assets/logo.png" alt="Germa">
-    <div class="name"><b>GERMA</b> Creators</div>
-    <div class="spacer"></div>
-    <div class="tag">Content Rewards</div>
-  </div>
-</header>
+<div class="topbar">
+  <div class="hazard"></div>
+  <header class="top">
+    <div class="wrap">
+      <img src="./assets/logo.png" alt="Germa">
+      <div class="name"><b>GERMA</b> Creators</div>
+      <div class="spacer"></div>
+      <div class="tag">Content Rewards</div>
+    </div>
+  </header>
+</div>
 
 <!-- SEGMENTED TAB BAR -->
 <nav class="tabs">
@@ -397,6 +419,14 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   <!-- ================= EARN ================= -->
   <section class="panel active" id="tab-earn">
     <div class="wrap">
+
+      <div class="earnbal">
+        <div class="eb-l">
+          <div class="eb-lab">Your balance</div>
+          <div class="eb-amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg><span id="earnBal">0</span></div>
+        </div>
+        <button class="eb-wd" onclick="openWithdraw()">Withdraw</button>
+      </div>
 
       <a class="banner" onclick="goSubmit()">
         <img src="./assets/banner-clip.png" alt="Clip and Earn Diamonds — post clips on TikTok, get rewarded per view">
@@ -523,7 +553,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
         <div class="mb-amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg><span id="mBal">0</span></div>
         <div class="mb-lab">Diamonds available</div>
         <div class="mb-held" id="mHeld" style="display:none"></div>
-        <button class="cta" id="btnWithdraw" onclick="doWithdraw()" disabled>Withdraw (min 5)</button>
+        <button class="cta" id="btnWithdraw" onclick="openWithdraw()" disabled>Withdraw (min 5)</button>
         <div class="msg" id="withdrawMsg"></div>
       </div>
 
@@ -660,6 +690,17 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     <div class="field"><label>TikTok URL</label><input id="fUrl" type="url" placeholder="https://www.tiktok.com/@you/video/..."></div>
     <button class="cta" type="button" onclick="doSubmit()">Submit clip</button>
     <div class="msg" id="submitMsg"></div>
+  </div>
+</div>
+
+<!-- withdraw modal (Codashop-style diamond tiers) -->
+<div class="modal" id="mWithdraw" onclick="if(event.target===this)closeModal('mWithdraw')">
+  <div class="modal-card">
+    <div class="modal-h"><div class="modal-t">Withdraw Diamonds</div><button class="modal-x" type="button" onclick="closeModal('mWithdraw')">&times;</button></div>
+    <div class="modal-sub">Topped up straight to your MLBB Game ID. Pick an amount (minimum 5) up to your balance.</div>
+    <div class="wd-bal">Balance: <b><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg> <span id="wdBal">0</span></b></div>
+    <div class="wd-tiers" id="wdTiers"></div>
+    <div class="msg" id="withdrawMsg"></div>
   </div>
 </div>
 
@@ -866,10 +907,17 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   }
 
   var CFG={minWithdraw:5};
+  var BAL=0;
+  // Codashop-style MLBB diamond denominations (min 5).
+  var DIA_TIERS=[5,11,22,56,86,112,172,257,343,429,514,706,1050,1412,2195];
   function renderMine(r){
     if(r.cfg && r.cfg.minWithdraw) CFG.minWithdraw=r.cfg.minWithdraw;
     renderProfileCard(r.profile);
     var bal=(r.balance && r.balance.balance) || 0;
+    BAL=bal;
+    var eb=document.getElementById('earnBal'); if(eb) eb.textContent=bal.toLocaleString('en-US');
+    var wb=document.getElementById('wdBal'); if(wb) wb.textContent=bal.toLocaleString('en-US');
+    var wt=document.getElementById('mWithdraw'); if(wt && wt.classList.contains('open')) renderWdTiers();
     var held=(r.balance && r.balance.held) || 0;
     document.getElementById('mBal').textContent=bal.toLocaleString('en-US');
     var heldEl=document.getElementById('mHeld');
@@ -947,15 +995,31 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     }
   }
 
-  async function doWithdraw(){
+  function openWithdraw(){
+    if(!PROF){ openProfile(); showMsg('profileMsg','Set up your payout profile first, then withdraw.','info'); return; }
     clearMsg('withdrawMsg');
-    var bal=parseInt(document.getElementById('mBal').textContent.replace(/,/g,''),10)||0;
-    if(bal < CFG.minWithdraw){ showMsg('withdrawMsg','You need at least '+CFG.minWithdraw+' Diamonds to withdraw.','err'); return; }
-    showMsg('withdrawMsg','Requesting withdrawal...','info');
-    var r=await api('germaClipWithdraw',{amount:bal});
+    renderWdTiers();
+    openModal('mWithdraw');
+  }
+  function renderWdTiers(){
+    var el=document.getElementById('wdTiers'); if(!el) return;
+    el.innerHTML=DIA_TIERS.map(function(t){
+      var dis=(t>BAL)?' dis':'';
+      return '<div class="wd-tier'+dis+'" onclick="doWithdrawTier('+t+')">'+
+        '<div class="t-dia">'+diaSvg()+t.toLocaleString('en-US')+'</div>'+
+        '<div class="t-peso">&#8776; &#8369;'+t.toLocaleString('en-US')+'</div></div>';
+    }).join('');
+  }
+  async function doWithdrawTier(amount){
+    clearMsg('withdrawMsg');
+    if(amount>BAL){ showMsg('withdrawMsg','Not enough balance for that amount.','err'); return; }
+    if(amount<CFG.minWithdraw){ showMsg('withdrawMsg','Minimum withdrawal is '+CFG.minWithdraw+' Diamonds.','err'); return; }
+    showMsg('withdrawMsg','Requesting '+amount+' Diamonds...','info');
+    var r=await api('germaClipWithdraw',{amount:amount});
     if(r && r.ok){
-      showMsg('withdrawMsg','Withdrawal requested.','ok');
+      showMsg('withdrawMsg','Withdrawal requested for '+amount+' Diamonds.','ok');
       await refreshMine();
+      setTimeout(function(){ closeModal('mWithdraw'); },900);
     }else{
       var err=r && r.error;
       var msg=WITHDRAW_ERR[err] || 'Could not process that withdrawal. Try again.';
