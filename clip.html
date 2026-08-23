@@ -268,6 +268,21 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .sub-right{flex:0 0 auto;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
 .sub-right .amt{font-family:var(--mono);font-weight:700;color:var(--dia-hi);display:flex;align-items:center;gap:5px;font-size:13px}
 
+/* tasks tab */
+.task-card{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;
+  padding:15px 16px;display:flex;align-items:center;gap:12px}
+.task-card:first-child{margin-top:0}
+.task-b{flex:1;min-width:0}
+.task-t{font-weight:700;font-size:14px}
+.task-d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+.task-r{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+.task-r .amt{font-family:var(--mono);font-weight:700;color:var(--dia-hi);display:flex;align-items:center;gap:5px;font-size:13px}
+.task-r .amt svg{width:14px;height:14px}
+.tbtn{background:#0d0e12;color:var(--text);border:1px solid var(--line);border-radius:10px;
+  font-family:var(--f);font-weight:700;font-size:12.5px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.tbtn:disabled{opacity:.55;cursor:not-allowed}
+.tbtn.go{background:var(--brand);color:#0b0b0c;border-color:var(--brand)}
+
 /* active campaign card + clipper analytics (Whop-style) */
 .camp-card{background:
   radial-gradient(120% 140% at 100% -20%,rgba(255,212,0,.12),transparent 55%),var(--surface);
@@ -365,6 +380,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   <div class="wrap">
     <button class="tab active" id="t-earn" onclick="showTab('earn')">Earn</button>
     <button class="tab" id="t-clips" onclick="showTab('clips')">My Clips<span class="badge" id="clipsBadge"></span></button>
+    <button class="tab" id="t-tasks" onclick="showTab('tasks')">Tasks</button>
     <button class="tab" id="t-board" onclick="showTab('board')">Leaderboard</button>
     <button class="tab" id="t-guide" onclick="showTab('guide')">Guide</button>
   </div>
@@ -495,6 +511,9 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
         <div class="kpi"><div class="n blue" id="aViews">0</div><div class="l">Total views</div></div>
         <div class="kpi"><div class="n green" id="aEarned">0</div><div class="l">Total earned</div></div>
       </div>
+      <div class="stat3" style="grid-template-columns:1fr">
+        <div class="kpi"><div class="n yellow" id="aTasks">0</div><div class="l">Tasks completed</div></div>
+      </div>
 
       <div class="mine-balance" style="margin-top:14px">
         <div class="mb-amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg><span id="mBal">0</span></div>
@@ -512,6 +531,17 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       <div class="mc-title" style="margin-top:22px">Withdrawal history</div>
       <div id="wdList" class="sublist"><div class="empty">No withdrawals yet.</div></div>
 
+    </div>
+  </section>
+
+  <!-- ================= TASKS ================= -->
+  <section class="panel" id="tab-tasks">
+    <div class="wrap">
+      <div class="blk" style="margin-top:0">
+        <div class="eyebrow">Quick earn</div>
+        <h2>Tasks</h2>
+      </div>
+      <div id="taskList"></div>
     </div>
   </section>
 
@@ -631,7 +661,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 
 <script>
   /* ---------- tab console ---------- */
-  var TABS=['earn','clips','board','guide'];
+  var TABS=['earn','clips','tasks','board','guide'];
   function showTab(name){
     TABS.forEach(function(t){
       var panel=document.getElementById('tab-'+t), btn=document.getElementById('t-'+t);
@@ -790,6 +820,38 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     }).join('');
   }
 
+  /* ---------- tasks: render + timer + claim ---------- */
+  var TASKS=[], TCLAIMS={}, TSTATE={}; // TSTATE[id]='idle'|'running'|'ready'
+  function renderTasks(){
+    var el=document.getElementById('taskList'); if(!el) return;
+    if(!TASKS.length){ el.innerHTML='<div class="sublist"><div class="empty">No tasks right now. Check back soon.</div></div>'; return; }
+    el.innerHTML=TASKS.map(function(t){
+      var done=!!TCLAIMS[t.id], st=TSTATE[t.id]||'idle';
+      var btn = done ? '<span class="pill approved">Done</span>'
+        : st==='running' ? '<button class="tbtn" disabled id="tb-'+t.id+'">Wait '+t.secs+'s</button>'
+        : st==='ready' ? '<button class="tbtn go" onclick="claimTask(\''+t.id+'\')">Claim</button>'
+        : '<button class="tbtn" onclick="startTask(\''+t.id+'\')">Start</button>';
+      return '<div class="task-card"><div class="task-b"><div class="task-t">'+esc(t.title)+'</div>'+
+        '<div class="task-d">'+esc(t.desc)+'</div></div>'+
+        '<div class="task-r"><span class="amt">'+diaSvg()+(t.reward||0)+'</span>'+btn+'</div></div>';
+    }).join('');
+  }
+  function startTask(id){
+    var t=TASKS.filter(function(x){return x.id===id;})[0]; if(!t) return;
+    try{ if(window.GermaClip&&window.GermaClip.openExternal){ window.GermaClip.openExternal(t.link); } else { window.open(t.link,'_blank'); } }catch(e){ window.open(t.link,'_blank'); }
+    TSTATE[id]='running'; renderTasks();
+    var left=t.secs;
+    var iv=setInterval(function(){
+      left--; var b=document.getElementById('tb-'+id); if(b) b.textContent='Wait '+left+'s';
+      if(left<=0){ clearInterval(iv); TSTATE[id]='ready'; renderTasks(); }
+    },1000);
+  }
+  async function claimTask(id){
+    var r=await api('germaTaskClaim',{taskId:id});
+    if(r&&r.ok){ TCLAIMS[id]=true; TSTATE[id]='done'; await refreshMine(); }
+    else { alert((r&&r.error==='already')?'Already claimed.':'Could not claim. Try again.'); }
+  }
+
   var CFG={minWithdraw:5};
   function renderMine(r){
     if(r.cfg && r.cfg.minWithdraw) CFG.minWithdraw=r.cfg.minWithdraw;
@@ -821,6 +883,10 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     if(badge){ if(active>0){ badge.textContent=active; badge.classList.add('on'); } else { badge.classList.remove('on'); } }
     renderSubmissions(subs);
     renderWithdrawals(r.withdrawals);
+    var tasksDone=(r.balance && r.balance.tasksDone) || 0;
+    var tEl=document.getElementById('aTasks');
+    if(tEl) tEl.textContent=tasksDone.toLocaleString('en-US');
+    TASKS=r.tasks||[]; TCLAIMS=r.taskClaims||{}; renderTasks();
   }
 
   async function refreshMine(){
