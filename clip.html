@@ -373,6 +373,17 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .wd-tier .t-peso{font-size:10.5px;color:var(--faint)}
 .wd-tier:active{transform:translateY(1px)}
 .wd-tier.dis{opacity:.32;pointer-events:none}
+.wd-methods{margin-top:14px;display:flex;gap:8px}
+.wd-m{flex:1;padding:11px 4px;border-radius:11px;border:1px solid var(--line);background:#0d0e12;color:var(--muted);
+  font-family:var(--f);font-weight:700;font-size:12px;cursor:pointer;text-align:center;white-space:nowrap}
+.wd-m.active{color:var(--text);border-color:var(--dia)}
+.wd-m.rbx.active{border-color:#fff;background:#1c1c1c;color:#fff}
+.wd-m.gc.active{border-color:#0a7cff;background:rgba(10,124,255,.16);color:#5aa8ff}
+.wd-dest{margin-top:14px}
+.wd-dest .field:first-child{margin-top:0}
+.wd-note{margin-top:14px;font-size:12.5px;color:var(--muted);background:#0d0e12;border:1px solid var(--line);
+  border-radius:11px;padding:11px 13px}
+.wd-note b{color:var(--good)}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -693,12 +704,17 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   </div>
 </div>
 
-<!-- withdraw modal (Codashop-style diamond tiers) -->
+<!-- withdraw modal (multi-method: diamonds / roblox / gcash) -->
 <div class="modal" id="mWithdraw" onclick="if(event.target===this)closeModal('mWithdraw')">
   <div class="modal-card">
-    <div class="modal-h"><div class="modal-t">Withdraw Diamonds</div><button class="modal-x" type="button" onclick="closeModal('mWithdraw')">&times;</button></div>
-    <div class="modal-sub">Topped up straight to your MLBB Game ID. Pick an amount (minimum 5) up to your balance.</div>
+    <div class="modal-h"><div class="modal-t">Withdraw</div><button class="modal-x" type="button" onclick="closeModal('mWithdraw')">&times;</button></div>
     <div class="wd-bal">Balance: <b><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg> <span id="wdBal">0</span></b></div>
+    <div class="wd-methods">
+      <button class="wd-m active" id="wdm-diamonds" type="button" onclick="setWdMethod('diamonds')">MLBB Diamonds</button>
+      <button class="wd-m rbx" id="wdm-roblox" type="button" onclick="setWdMethod('roblox')">Roblox</button>
+      <button class="wd-m gc" id="wdm-gcash" type="button" onclick="setWdMethod('gcash')">GCash</button>
+    </div>
+    <div id="wdDest"></div>
     <div class="wd-tiers" id="wdTiers"></div>
     <div class="msg" id="withdrawMsg"></div>
   </div>
@@ -995,35 +1011,74 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     }
   }
 
+  // All methods convert 1:1 to the diamond cost (1 diamond = 1 Robux = 1 peso).
+  var WD_METHOD='diamonds';
+  var WD_CFG={
+    diamonds:{ tiers:DIA_TIERS, min:5 },
+    roblox:{ tiers:[100,200,400,800,1000,2000,5000], min:100 },
+    gcash:{ tiers:[50,100,200,300,500,1000], min:50 }
+  };
   function openWithdraw(){
     if(!PROF){ openProfile(); showMsg('profileMsg','Set up your payout profile first, then withdraw.','info'); return; }
     clearMsg('withdrawMsg');
-    renderWdTiers();
+    setWdMethod(WD_METHOD);
     openModal('mWithdraw');
+  }
+  function setWdMethod(m){
+    WD_METHOD=m;
+    ['diamonds','roblox','gcash'].forEach(function(x){ var b=document.getElementById('wdm-'+x); if(b) b.classList.toggle('active',x===m); });
+    renderWdDest(); renderWdTiers();
+  }
+  function renderWdDest(){
+    var el=document.getElementById('wdDest'); if(!el) return;
+    if(WD_METHOD==='diamonds'){
+      var ign=PROF?esc(PROF.ign||''):'', id=PROF?esc(PROF.mlbbId||''):'';
+      el.innerHTML='<div class="wd-note">Topped up to your MLBB account: <b>'+ign+'</b> (ID '+id+').</div>';
+    }else if(WD_METHOD==='roblox'){
+      el.innerHTML='<div class="wd-dest"><div class="field"><label>Roblox username</label><input id="wdUser" type="text" placeholder="e.g. yourRobloxName"></div></div>';
+    }else{
+      el.innerHTML='<div class="wd-dest"><div class="field"><label>GCash number</label><input id="wdGcNum" type="text" inputmode="numeric" placeholder="09XXXXXXXXX"></div>'+
+        '<div class="field"><label>GCash account name</label><input id="wdGcName" type="text" placeholder="Full name"></div></div>';
+    }
   }
   function renderWdTiers(){
     var el=document.getElementById('wdTiers'); if(!el) return;
-    el.innerHTML=DIA_TIERS.map(function(t){
-      var dis=(t>BAL)?' dis':'';
-      return '<div class="wd-tier'+dis+'" onclick="doWithdrawTier('+t+')">'+
-        '<div class="t-dia">'+diaSvg()+t.toLocaleString('en-US')+'</div>'+
-        '<div class="t-peso">&#8776; &#8369;'+t.toLocaleString('en-US')+'</div></div>';
+    var tiers=(WD_CFG[WD_METHOD]||WD_CFG.diamonds).tiers;
+    el.innerHTML=tiers.map(function(t){
+      var dis=(t>BAL)?' dis':''; // diamond cost = t (1:1)
+      var main, sub;
+      if(WD_METHOD==='roblox'){ main=t.toLocaleString('en-US')+' Robux'; sub=diaSvg()+t.toLocaleString('en-US'); }
+      else if(WD_METHOD==='gcash'){ main='&#8369;'+t.toLocaleString('en-US'); sub=diaSvg()+t.toLocaleString('en-US'); }
+      else { main=diaSvg()+t.toLocaleString('en-US'); sub='&#8776; &#8369;'+t.toLocaleString('en-US'); }
+      return '<div class="wd-tier'+dis+'" onclick="doWithdrawTier('+t+')"><div class="t-dia">'+main+'</div><div class="t-peso">'+sub+'</div></div>';
     }).join('');
   }
-  async function doWithdrawTier(amount){
+  async function doWithdrawTier(target){
     clearMsg('withdrawMsg');
-    if(amount>BAL){ showMsg('withdrawMsg','Not enough balance for that amount.','err'); return; }
-    if(amount<CFG.minWithdraw){ showMsg('withdrawMsg','Minimum withdrawal is '+CFG.minWithdraw+' Diamonds.','err'); return; }
-    showMsg('withdrawMsg','Requesting '+amount+' Diamonds...','info');
-    var r=await api('germaClipWithdraw',{amount:amount});
+    var cost=target; // 1:1 diamonds
+    if(cost>BAL){ showMsg('withdrawMsg','Not enough Diamonds for that amount.','err'); return; }
+    var dest='';
+    if(WD_METHOD==='roblox'){
+      dest=((document.getElementById('wdUser')||{}).value||'').trim();
+      if(!dest){ showMsg('withdrawMsg','Enter your Roblox username.','err'); return; }
+    }else if(WD_METHOD==='gcash'){
+      var n=((document.getElementById('wdGcNum')||{}).value||'').trim();
+      var nm=((document.getElementById('wdGcName')||{}).value||'').trim();
+      if(!n){ showMsg('withdrawMsg','Enter your GCash number.','err'); return; }
+      dest=n+(nm?(' / '+nm):'');
+    }
+    showMsg('withdrawMsg','Requesting withdrawal...','info');
+    var r=await api('germaClipWithdraw',{method:WD_METHOD, target:target, amount:cost, dest:dest});
     if(r && r.ok){
-      showMsg('withdrawMsg','Withdrawal requested for '+amount+' Diamonds.','ok');
+      showMsg('withdrawMsg','Withdrawal requested.','ok');
       await refreshMine();
       setTimeout(function(){ closeModal('mWithdraw'); },900);
     }else{
       var err=r && r.error;
       var msg=WITHDRAW_ERR[err] || 'Could not process that withdrawal. Try again.';
       if(err==='min' && r.min) msg='Minimum withdrawal is '+r.min+' Diamonds.';
+      if(err==='no_dest') msg='Enter where to send your withdrawal.';
+      if(err==='no_profile') msg='Set up your MLBB profile first.';
       showMsg('withdrawMsg', msg, 'err');
     }
   }
