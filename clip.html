@@ -710,11 +710,10 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 <!-- profile modal -->
 <div class="modal" id="mProfile" onclick="if(event.target===this)closeModal('mProfile')">
   <div class="modal-card">
-    <div class="modal-h"><div class="modal-t">Payout profile</div><button class="modal-x" type="button" onclick="closeModal('mProfile')">&times;</button></div>
-    <div class="modal-sub">Where your Diamonds are sent. Editable once a week.</div>
-    <div class="field"><label>Game ID</label><input id="fId" type="text" inputmode="numeric" placeholder="e.g. 123456789"></div>
-    <div class="field"><label>Server (zone ID)</label><input id="fServer" type="text" inputmode="numeric" placeholder="e.g. 2001"></div>
-    <button class="cta" type="button" onclick="saveProfile()">Save profile</button>
+    <div class="modal-h"><div class="modal-t">Your TikTok</div><button class="modal-x" type="button" onclick="closeModal('mProfile')">&times;</button></div>
+    <div class="modal-sub">The username you post your clips from. Editable once a week.</div>
+    <div class="field"><label>TikTok username</label><input id="fUser" type="text" autocapitalize="none" autocomplete="off" placeholder="e.g. yourtiktok"></div>
+    <button class="cta" type="button" onclick="saveProfile()">Save</button>
     <div class="msg" id="profileMsg"></div>
   </div>
 </div>
@@ -782,12 +781,11 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     <div class="gate-logo"><img src="./assets/logo.png" alt=""></div>
     <div class="gate-brand"><b>GERMA</b> Creators</div>
     <h2 class="gate-h">Set up your <span class="hl">creator profile</span></h2>
-    <p class="gate-sub">Rewards go straight to your Mobile Legends account. Enter your Game ID and Server to get in.</p>
-    <div class="field"><label>MLBB Game ID</label><input id="gId" type="text" inputmode="numeric" placeholder="e.g. 123456789"></div>
-    <div class="field"><label>Server (zone ID)</label><input id="gServer" type="text" inputmode="numeric" placeholder="e.g. 2001"></div>
+    <p class="gate-sub">Enter the TikTok username you post your clips from. We use it to confirm your videos and pull your name and photo automatically.</p>
+    <div class="field"><label>TikTok username</label><input id="gUser" type="text" autocapitalize="none" autocomplete="off" placeholder="e.g. yourtiktok"></div>
     <button class="cta" type="button" onclick="saveProfileGate()">Enter Germa Creators</button>
     <div class="msg" id="gateMsg"></div>
-    <div class="gate-foot">Editable once a week. Paid in MLBB Diamonds <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div>
+    <div class="gate-foot">Editable once a week. Your MLBB Game ID is asked only when you withdraw <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div>
   </div>
 </div>
 
@@ -812,8 +810,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.add('open'); document.body.style.overflow='hidden'; } }
   function closeModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('open'); document.body.style.overflow=''; } }
   function openProfile(){
-    if(PROF){ var a=document.getElementById('fId'), b=document.getElementById('fServer');
-      if(a) a.value=PROF.mlbbId||''; if(b) b.value=PROF.server||''; }
+    if(PROF){ var a=document.getElementById('fUser'); if(a) a.value=PROF.tiktokUser||''; }
     clearMsg('profileMsg');
     openModal('mProfile');
   }
@@ -849,17 +846,16 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   // Full-screen setup gate: shown until the clipper has a verified MLBB profile.
   function showGate(on){ var g=document.getElementById('profileGate'); if(g){ g.style.display=on?'flex':'none'; document.body.style.overflow=on?'hidden':''; } }
   async function saveProfileGate(){
-    var id=document.getElementById('gId').value.trim();
-    var server=document.getElementById('gServer').value.trim();
+    var user=document.getElementById('gUser').value.trim().replace(/^@+/,'');
     clearMsg('gateMsg');
-    if(!id||!server){ showMsg('gateMsg','Enter both your Game ID and Server.','err'); return; }
-    showMsg('gateMsg','Checking your account...','info');
-    var r=await api('germaClipProfile',{mlbbId:id,server:server});
-    if(r&&r.ok){ showMsg('gateMsg','Welcome, '+r.ign+'!','ok'); await refreshMine(); setTimeout(function(){ showGate(false); },700); }
+    if(!user){ showMsg('gateMsg','Enter your TikTok username.','err'); return; }
+    showMsg('gateMsg','Saving...','info');
+    var r=await api('germaClipProfile',{tiktokUser:user});
+    if(r&&r.ok){ showMsg('gateMsg','You are in!','ok'); await refreshMine(); setTimeout(function(){ showGate(false); },600); }
     else{
       var err=r&&r.error;
-      if(err==='cooldown'){ var days=r.days!=null?r.days:'a few'; showMsg('gateMsg','You can change your profile again in '+days+' day(s).','err'); }
-      else showMsg('gateMsg', PROFILE_ERR[err]||'Could not verify that profile. Try again.','err');
+      if(err==='cooldown'){ var days=r.days!=null?r.days:'a few'; showMsg('gateMsg','You can change your username again in '+days+' day(s).','err'); }
+      else showMsg('gateMsg', PROFILE_ERR[err]||'Could not save that username. Try again.','err');
     }
   }
   function goSubmit(){
@@ -915,23 +911,23 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   }
 
   var PROFILE_ERR={
-    bad_id:'That Game ID / Server looks invalid. Double-check both fields.',
-    id_taken:'That Game ID is already linked to another device.',
-    not_found:'We could not find that account on that server.',
-    server:'Invalid server / zone ID.',
+    bad_user:'That username looks invalid. Use only letters, numbers, dots and underscores.',
+    user_taken:'That TikTok username is already linked to another account.',
     network:'Could not reach the server. Check your connection and try again.'
   };
   var SUBMIT_ERR={
     bad_url:'That does not look like a valid TikTok video link.',
     closed:'Submissions are closed right now - the reward pool may be full.',
-    no_profile:'Set up your MLBB profile first, then submit your clip.',
+    no_profile:'Set up your TikTok username first, then submit your clip.',
+    not_your_clip:'This TikTok is not from your registered username. Submit your own clips only.',
     fetch_failed:'Could not read that TikTok link. Make sure it is public and try again.',
     duplicate:'This clip was already submitted.',
     network:'Could not reach the server. Check your connection and try again.'
   };
   var WITHDRAW_ERR={
     min:'You need at least the minimum balance to withdraw.',
-    no_profile:'Set up your MLBB profile before withdrawing.',
+    no_profile:'Set up your TikTok username before withdrawing.',
+    no_dest:'Enter where to send your withdrawal.',
     insufficient:'Not enough balance for that withdrawal.',
     network:'Could not reach the server. Check your connection and try again.'
   };
@@ -947,22 +943,24 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   function renderProfileCard(profile){
     var el=document.getElementById('profileCard');
     if(!el) return;
-    if(profile && profile.ign){
+    if(profile && (profile.ign || profile.tiktokUser)){
       PROF=profile;
-      var initial=esc((String(profile.ign).trim().charAt(0)||'?').toUpperCase());
-      var meta='MLBB ID '+esc(profile.mlbbId||'')+(profile.server?' - Server '+esc(profile.server):'');
+      var name=esc(profile.ign || ('@'+(profile.tiktokUser||'')));
+      var initial=esc((String(name).replace(/^@/,'').charAt(0)||'?').toUpperCase());
+      var handle='@'+esc(profile.tiktokUser||'');
+      // avatar comes from their TikTok automatically (set on first submit) - no manual pic
       var avInner = profile.avatar ? '<span class="av-clip"><img src="'+esc(profile.avatar)+'" alt=""></span>' : initial;
       el.className='prof';
-      el.innerHTML='<div class="prof-av'+(profile.avatar?' img':'')+'" onclick="pickAvatar(event)">'+avInner+'<span class="cam">+</span></div>'+
-        '<div class="prof-b"><div class="prof-ign">'+esc(profile.ign)+'</div>'+
-        '<div class="prof-sub">'+meta+'</div></div>'+
+      el.innerHTML='<div class="prof-av'+(profile.avatar?' img':'')+'">'+avInner+'</div>'+
+        '<div class="prof-b"><div class="prof-ign">'+name+'</div>'+
+        '<div class="prof-sub">'+handle+'</div></div>'+
         '<span class="prof-edit">Edit</span>';
     }else{
       PROF=null;
       el.className='prof empty';
       el.innerHTML='<div class="prof-av ph">+</div>'+
-        '<div class="prof-b"><div class="prof-ign">Set up your payout profile</div>'+
-        '<div class="prof-sub">Add your MLBB Game ID to get paid in Diamonds</div></div>'+
+        '<div class="prof-b"><div class="prof-ign">Set up your creator profile</div>'+
+        '<div class="prof-sub">Add your TikTok username to start</div></div>'+
         '<span class="prof-edit">Set up</span>';
     }
   }
@@ -1037,7 +1035,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   function renderMine(r){
     if(r.cfg && r.cfg.minWithdraw) CFG.minWithdraw=r.cfg.minWithdraw;
     renderProfileCard(r.profile);
-    showGate(!(r.profile && r.profile.ign)); // must set up profile before entering
+    showGate(!(r.profile && r.profile.tiktokUser)); // must set TikTok username before entering
     var bal=(r.balance && r.balance.balance) || 0;
     BAL=bal;
     var eb=document.getElementById('earnBal'); if(eb) eb.textContent=bal.toLocaleString('en-US');
@@ -1078,23 +1076,22 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   }
 
   async function saveProfile(){
-    var id=document.getElementById('fId').value.trim();
-    var server=document.getElementById('fServer').value.trim();
+    var user=document.getElementById('fUser').value.trim().replace(/^@+/,'');
     clearMsg('profileMsg');
-    if(!id || !server){ showMsg('profileMsg','Enter both your Game ID and Server.','err'); return; }
-    showMsg('profileMsg','Checking...','info');
-    var r=await api('germaClipProfile',{mlbbId:id,server:server});
+    if(!user){ showMsg('profileMsg','Enter your TikTok username.','err'); return; }
+    showMsg('profileMsg','Saving...','info');
+    var r=await api('germaClipProfile',{tiktokUser:user});
     if(r && r.ok){
-      showMsg('profileMsg','Verified as '+r.ign+'.','ok');
+      showMsg('profileMsg','Saved.','ok');
       await refreshMine();
-      setTimeout(function(){ closeModal('mProfile'); },750);
+      setTimeout(function(){ closeModal('mProfile'); },600);
     }else{
       var err=r && r.error;
       if(err==='cooldown'){
         var days=r.days!=null?r.days:'a few';
-        showMsg('profileMsg','You can change your profile again in '+days+' day(s).','err');
+        showMsg('profileMsg','You can change your username again in '+days+' day(s).','err');
       }else{
-        showMsg('profileMsg', PROFILE_ERR[err] || 'Could not verify that profile. Try again.', 'err');
+        showMsg('profileMsg', PROFILE_ERR[err] || 'Could not save that username. Try again.', 'err');
       }
     }
   }
@@ -1140,8 +1137,8 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   function renderWdDest(){
     var el=document.getElementById('wdDest'); if(!el) return;
     if(WD_METHOD==='diamonds'){
-      var ign=PROF?esc(PROF.ign||''):'', id=PROF?esc(PROF.mlbbId||''):'';
-      el.innerHTML='<div class="wd-note">Topped up to your MLBB account: <b>'+ign+'</b> (ID '+id+').</div>';
+      el.innerHTML='<div class="wd-dest"><div class="field"><label>MLBB Game ID</label><input id="wdGameId" type="text" inputmode="numeric" placeholder="e.g. 123456789"></div>'+
+        '<div class="field"><label>Server (zone ID)</label><input id="wdServer" type="text" inputmode="numeric" placeholder="e.g. 2001"></div></div>';
     }else if(WD_METHOD==='roblox'){
       el.innerHTML='<div class="wd-dest"><div class="field"><label>Roblox username</label><input id="wdUser" type="text" placeholder="e.g. yourRobloxName"></div></div>';
     }else{
@@ -1166,7 +1163,12 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     var cost=target; // 1:1 diamonds
     if(cost>BAL){ showMsg('withdrawMsg','Not enough Diamonds for that amount.','err'); return; }
     var dest='';
-    if(WD_METHOD==='roblox'){
+    if(WD_METHOD==='diamonds'){
+      var gid=((document.getElementById('wdGameId')||{}).value||'').trim();
+      var srv=((document.getElementById('wdServer')||{}).value||'').trim();
+      if(!gid||!srv){ showMsg('withdrawMsg','Enter your MLBB Game ID and Server.','err'); return; }
+      dest='ID '+gid+' ('+srv+')';
+    }else if(WD_METHOD==='roblox'){
       dest=((document.getElementById('wdUser')||{}).value||'').trim();
       if(!dest){ showMsg('withdrawMsg','Enter your Roblox username.','err'); return; }
     }else if(WD_METHOD==='gcash'){
