@@ -264,21 +264,30 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .sub-right{flex:0 0 auto;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
 .sub-right .amt{font-family:var(--mono);font-weight:700;color:var(--dia-hi);display:flex;align-items:center;gap:5px;font-size:13px}
 
-/* active campaign strip + clipper analytics (Whop-style) */
-.camp{display:flex;gap:12px;align-items:center;background:
-  radial-gradient(120% 140% at 100% -20%,rgba(255,212,0,.1),transparent 55%),var(--surface);
-  border:1px solid var(--line);border-radius:16px;padding:14px 16px}
-.camp-ic{width:40px;height:40px;border-radius:11px;background:#0d0e12;border:1px solid var(--line);
+/* active campaign card + clipper analytics (Whop-style) */
+.camp-card{background:
+  radial-gradient(120% 140% at 100% -20%,rgba(255,212,0,.12),transparent 55%),var(--surface);
+  border:1px solid var(--line);border-radius:18px;padding:18px}
+.camp-card .row1{display:flex;align-items:center;gap:11px}
+.camp-ic{width:44px;height:44px;border-radius:12px;background:#0d0e12;border:1px solid var(--line);
   display:flex;align-items:center;justify-content:center;flex:0 0 auto}
-.camp-ic img{width:28px;height:28px;object-fit:contain}
-.camp-b{min-width:0;flex:1}
-.camp-t{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.camp-ic img{width:30px;height:30px;object-fit:contain}
+.camp-who{min-width:0;flex:1}
+.camp-t{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px}
 .camp-badge{font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--good);text-transform:uppercase;
   background:rgba(52,211,153,.13);border:1px solid rgba(52,211,153,.32);padding:2px 7px;border-radius:20px}
-.camp-s{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.camp-count{flex:0 0 auto;text-align:right}
-.camp-count .cn{font-family:var(--mono);font-weight:700;font-size:18px;color:var(--brand)}
-.camp-count .cl{font-size:9.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.07em}
+.camp-who .s{font-size:12.5px;color:var(--muted);margin-top:2px}
+.camp-meta{margin-top:15px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.cm{background:#0d0e12;padding:11px 13px}
+.cm span{display:block;font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.07em}
+.cm b{font-family:var(--mono);font-weight:700;font-size:14px;display:flex;align-items:center;gap:5px;margin-top:3px}
+.cm b svg{width:14px;height:14px}
+.pool{margin-top:15px}
+.pool .lab{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:7px}
+.pool .lab b{color:var(--text);font-family:var(--mono)}
+.pool .track{height:9px;border-radius:6px;background:#0d0e12;border:1px solid var(--line);overflow:hidden}
+.pool .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--brand-deep),var(--brand),var(--brand-hi))}
 
 .stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
 .stat3 .kpi{padding:12px 11px}
@@ -414,15 +423,27 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     <div class="wrap">
 
       <!-- the one active campaign this clipper is working -->
-      <div class="camp">
-        <div class="camp-ic"><img src="./assets/logo.png" alt=""></div>
-        <div class="camp-b">
-          <div class="camp-t">Germa Toolkit <span class="camp-badge">Active</span></div>
-          <div class="camp-s">TikTok - &#8369;1 / 1,000 views - unlimited clips</div>
+      <div class="camp-card">
+        <div class="row1">
+          <div class="camp-ic"><img src="./assets/logo.png" alt=""></div>
+          <div class="camp-who">
+            <div class="camp-t">Germa Toolkit <span class="camp-badge">Active</span></div>
+            <div class="s">Grow the app - 1 active campaign</div>
+          </div>
+          <span class="chip-tik">
+            <svg class="dia" viewBox="0 0 24 24" fill="#0b0b0c" style="width:14px;height:14px"><path d="M16.5 3c.3 2 1.6 3.6 3.5 4v2.4c-1.3 0-2.6-.4-3.5-1v6.8c0 3.2-2.6 4.9-5.1 4.4-2.9-.6-3.9-3.9-2-6 1.2-1.3 3-1.4 3.6-1.2V15c-.9-.3-1.7.3-1.6 1.2.1.9 1.3 1.3 1.9.5.2-.3.2-.6.2-1V3h3z"/></svg>
+            TikTok
+          </span>
         </div>
-        <div class="camp-count">
-          <div class="cn">1</div>
-          <div class="cl">Campaign</div>
+        <div class="camp-meta">
+          <div class="cm"><span>Reward</span><b>&#8369;1 / 1K views</b></div>
+          <div class="cm"><span>Upload on</span><b>TikTok only</b></div>
+          <div class="cm"><span>Clips allowed</span><b>Unlimited</b></div>
+          <div class="cm"><span>Min. payout</span><b>5 <svg viewBox="0 0 32 30"><use href="#dia"/></svg></b></div>
+        </div>
+        <div class="pool">
+          <div class="lab"><span>Reward pool</span><span><b>3,050</b> / 5,000 <svg class="dia" viewBox="0 0 32 30" style="width:12px;height:12px"><use href="#dia"/></svg> left</span></div>
+          <div class="track"><div class="fill" style="width:61%"></div></div>
         </div>
       </div>
 
