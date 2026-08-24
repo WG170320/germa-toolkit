@@ -530,8 +530,8 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 
         <div class="rate">
           <div class="big">&#8369;5<small> / 1,000 views</small></div>
-          <div class="paid">
-            <div class="n">4,120 <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div>
+          <div class="paid" id="heroPaid" style="display:none">
+            <div class="n"><span id="heroPaidN">0</span> <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div>
             <div class="l">paid to clippers</div>
           </div>
         </div>
@@ -540,8 +540,8 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       <!-- KPI tiles (illustrative launch figures) -->
       <div class="kpis">
         <div class="kpi"><div class="n yellow">&#8369;5<span style="font-size:12px;color:var(--faint);font-family:var(--f)">/1K</span></div><div class="l">Reward rate</div></div>
-        <div class="kpi"><div class="n blue">4,120 <svg class="dia" viewBox="0 0 32 30" style="width:14px;height:14px"><use href="#dia"/></svg></div><div class="l">Paid out</div></div>
-        <div class="kpi"><div class="n green">128</div><div class="l">Clippers</div></div>
+        <div class="kpi"><div class="n blue"><span id="kpiPaid">0</span> <svg class="dia" viewBox="0 0 32 30" style="width:14px;height:14px"><use href="#dia"/></svg></div><div class="l">Paid out</div></div>
+        <div class="kpi"><div class="n green" id="kpiClippers">0</div><div class="l">Clippers</div></div>
         <div class="kpi"><div class="n">5</div><div class="l">Min. withdraw</div></div>
       </div>
 
@@ -1219,8 +1219,21 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
         '<div class="amt">'+diaSvg()+(r.totalEarned||0).toLocaleString('en-US')+'</div></div>';
     }).join('');
   }
+  function applyStats(s){
+    if(!s) return;
+    var paid=Math.round(s.paidOut||0), clip=Math.round(s.clippers||0);
+    var fn=function(id,v){ var el=document.getElementById(id); if(el) el.textContent=v.toLocaleString('en-US'); };
+    fn('kpiPaid',paid); fn('kpiClippers',clip); fn('heroPaidN',paid);
+    // Social-proof chip only reads well once real payouts exist; hide it while still zero.
+    var hero=document.getElementById('heroPaid'); if(hero) hero.style.display = paid>0 ? '' : 'none';
+  }
+  async function loadStats(){
+    var r=await api('germaClipLeaderboard',{});
+    if(r&&r.ok) applyStats(r.stats);
+  }
   async function loadLeaderboard(){
     var r=await api('germaClipLeaderboard',{});
+    if(r&&r.ok) applyStats(r.stats);
     renderLeaderboard((r&&r.ok&&r.rows)||[]);
   }
   function findSub(id){ for(var i=0;i<SUBS.length;i++){ if(SUBS[i].id===id) return SUBS[i]; } return null; }
@@ -1254,6 +1267,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   }
 
   refreshMine();
+  loadStats();
 </script>
 </body>
 </html>
