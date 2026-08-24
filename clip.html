@@ -391,6 +391,9 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .modal-x{background:#0d0e12;border:1px solid var(--line);color:var(--muted);width:32px;height:32px;border-radius:9px;
   font-size:19px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .modal-sub{font-size:13px;color:var(--muted);margin-top:6px}
+.submit-hint{margin-top:11px;font-size:12px;color:var(--muted);background:rgba(255,212,0,.07);
+  border:1px solid rgba(255,212,0,.22);border-radius:10px;padding:9px 12px;line-height:1.45}
+.submit-hint b{color:var(--brand)}
 .modal-card .cta{margin-top:16px}
 
 /* balance strip at the top of Earn */
@@ -812,6 +815,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     <div class="modal-h"><div class="modal-t">Submit a clip</div><button class="modal-x" type="button" onclick="closeModal('mSubmit')">&times;</button></div>
     <div class="modal-sub">Paste a public TikTok link. We read its views automatically.</div>
     <div class="field"><label>TikTok URL</label><input id="fUrl" type="url" placeholder="https://www.tiktok.com/@you/video/..."></div>
+    <div class="submit-hint">Post your clip, then submit it here <b>within 1 hour</b> so all its views count.</div>
     <button class="cta" type="button" onclick="doSubmit()">Submit clip</button>
     <div class="msg" id="submitMsg"></div>
   </div>
@@ -1254,7 +1258,12 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       setTimeout(function(){ closeModal('mSubmit'); },900);
     }else{
       var err=r && r.error;
-      showMsg('submitMsg', SUBMIT_ERR[err] || 'Could not submit that clip. Try again.', 'err');
+      if(err==='too_old'){
+        var mins=(r&&r.maxAgeMins)||60;
+        var win=mins>=60?(Math.round(mins/60)+' hour(s)'):(mins+' minutes');
+        showMsg('submitMsg','Submit your clip within '+win+' of posting it. This one is older, so it can not be accepted.','err');
+      }
+      else showMsg('submitMsg', SUBMIT_ERR[err] || 'Could not submit that clip. Try again.', 'err');
     }
   }
 
