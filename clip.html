@@ -327,25 +327,54 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 
 .sub-right .amt.est{color:var(--faint);font-weight:400}
 
-/* clipper profile identity card */
-.prof{display:flex;align-items:center;gap:13px;margin-top:14px;background:var(--surface);
-  border:1px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;transition:border-color .12s}
-.prof:hover{border-color:#33384380}
-.prof-av{width:44px;height:44px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
-  font-weight:800;font-size:18px;color:#0b0b0c;background:linear-gradient(135deg,var(--brand-hi),var(--brand-deep))}
-.prof-av.ph{background:#0d0e12;border:1px dashed #3a4048;color:var(--faint);font-weight:400;font-size:22px}
-.prof-av{position:relative}
+/* ---- Creator ID panel: identity + balance + stats read as one card ---- */
+.creator-panel{position:relative;margin-top:14px;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  background:
+    radial-gradient(120% 130% at 100% -10%, rgba(56,189,248,.10), transparent 52%),
+    linear-gradient(180deg, var(--surface2), var(--surface));
+  box-shadow:0 18px 44px -28px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.03)}
+/* brand hairline at the very top echoes the app's hazard identity */
+.creator-panel::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;
+  background:linear-gradient(90deg, var(--brand-deep), var(--brand), var(--brand-hi), transparent 78%)}
+
+/* identity row (transparent inside the panel; card chrome lives on .creator-panel) */
+.prof{display:flex;align-items:center;gap:14px;padding:18px 18px 15px;cursor:pointer;transition:background .12s}
+.prof:hover{background:rgba(255,255,255,.02)}
+.prof-av{position:relative;width:54px;height:54px;border-radius:50%;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:21px;color:#0b0b0c;
+  background:linear-gradient(135deg,var(--brand-hi),var(--brand-deep));
+  box-shadow:0 0 0 2px var(--bg), 0 0 0 3.5px rgba(56,189,248,.55), 0 6px 16px -6px rgba(56,189,248,.5)}
+.prof-av.ph{background:#0d0e12;border:1px dashed #3a4048;color:var(--faint);font-weight:400;font-size:24px;box-shadow:0 0 0 2px var(--bg)}
 .prof-av.img{background:#0d0e12}
 .av-clip{position:absolute;inset:0;border-radius:50%;overflow:hidden}
 .av-clip img{width:100%;height:100%;object-fit:cover;display:block}
-.prof-av .cam{position:absolute;right:-3px;bottom:-3px;width:19px;height:19px;border-radius:50%;background:var(--dia);
-  color:#04202e;font-size:13px;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;
-  border:2px solid var(--surface)}
 .prof-b{flex:1;min-width:0}
-.prof-ign{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prof-sub{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prof-edit{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--dia-hi);background:rgba(56,189,248,.1);
-  border:1px solid rgba(56,189,248,.28);border-radius:9px;padding:8px 12px}
+.prof-name{display:flex;align-items:center;gap:8px;min-width:0}
+.prof-ign{font-weight:800;font-size:16.5px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-badge{flex:0 0 auto;font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--brand);background:rgba(255,212,0,.11);border:1px solid rgba(255,212,0,.28);border-radius:6px;padding:2.5px 7px}
+.prof-sub{font-size:12.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prof-edit{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--dia-hi);background:rgba(56,189,248,.1);
+  border:1px solid rgba(56,189,248,.28);border-radius:9px;padding:8px 13px;transition:background .12s}
+.prof:hover .prof-edit{background:rgba(56,189,248,.16)}
+
+/* balance band — the hero number, set apart by a hairline */
+.creator-bal{display:flex;align-items:center;gap:14px;padding:14px 18px 16px;border-top:1px solid var(--line)}
+.creator-bal .cb-amt{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:700;
+  font-size:38px;line-height:1;letter-spacing:-.02em;color:var(--dia-hi)}
+.creator-bal .cb-amt svg{width:.8em;height:.8em}
+.creator-bal .cb-side{display:flex;flex-direction:column;gap:3px}
+.creator-bal .cb-lab{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.creator-bal .cb-held{font-size:11.5px;color:var(--brand);font-weight:600}
+
+/* stat rail — one connected row with hairline separators */
+.creator-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:rgba(0,0,0,.16)}
+.creator-stats .cstat{display:flex;flex-direction:column;align-items:center;gap:4px;padding:13px 6px;position:relative}
+.creator-stats .cstat + .cstat::before{content:"";position:absolute;left:0;top:22%;bottom:22%;width:1px;background:var(--line)}
+.creator-stats .cstat .n{font-family:var(--mono);font-weight:700;font-size:17px;letter-spacing:-.01em;color:var(--text)}
+.creator-stats .cstat .n.dia{color:var(--dia-hi)}
+.creator-stats .cstat .n.gold{color:var(--brand)}
+.creator-stats .cstat .l{font-size:9.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.09em}
 
 /* bottom-sheet modal */
 .modal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;
@@ -584,30 +613,34 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   <section class="panel" id="tab-clips">
     <div class="wrap">
 
-      <!-- clipper profile at the very top (identity + avatar; edit opens a modal) -->
-      <div id="profileCard" class="prof empty" onclick="openProfile()">
-        <div class="prof-av ph">+</div>
-        <div class="prof-b">
-          <div class="prof-ign">Set up your creator profile</div>
-          <div class="prof-sub">Add your TikTok username to start earning</div>
+      <!-- clipper identity: one creator ID panel (profile + balance + stats read as a set) -->
+      <div class="creator-panel">
+        <!-- identity row (renderProfileCard owns the inside of #profileCard) -->
+        <div id="profileCard" class="prof empty" onclick="openProfile()">
+          <div class="prof-av ph">+</div>
+          <div class="prof-b">
+            <div class="prof-ign">Set up your creator profile</div>
+            <div class="prof-sub">Add your TikTok username to start earning</div>
+          </div>
+          <span class="prof-edit">Set up</span>
         </div>
-        <span class="prof-edit">Set up</span>
-      </div>
 
-      <!-- your analytics -->
-      <div class="stat3">
-        <div class="kpi"><div class="n" id="aSubs">0</div><div class="l">Submissions</div></div>
-        <div class="kpi"><div class="n blue" id="aViews">0</div><div class="l">Total views</div></div>
-        <div class="kpi"><div class="n green" id="aEarned">0</div><div class="l">Total earned</div></div>
-      </div>
-      <div class="stat3" style="grid-template-columns:1fr">
-        <div class="kpi"><div class="n yellow" id="aTasks">0</div><div class="l">Tasks completed</div></div>
-      </div>
+        <!-- available balance = the number the clipper cares about, front and center -->
+        <div class="creator-bal">
+          <div class="cb-amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg><span id="mBal">0</span></div>
+          <div class="cb-side">
+            <div class="cb-lab">Diamonds available</div>
+            <div class="cb-held" id="mHeld" style="display:none"></div>
+          </div>
+        </div>
 
-      <div class="mine-balance" style="margin-top:14px">
-        <div class="mb-amt"><svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg><span id="mBal">0</span></div>
-        <div class="mb-lab">Diamonds available</div>
-        <div class="mb-held" id="mHeld" style="display:none"></div>
+        <!-- one connected stat rail, hairline-divided -->
+        <div class="creator-stats">
+          <div class="cstat"><span class="n" id="aSubs">0</span><span class="l">Clips</span></div>
+          <div class="cstat"><span class="n dia" id="aViews">0</span><span class="l">Views</span></div>
+          <div class="cstat"><span class="n gold" id="aEarned">0</span><span class="l">Earned</span></div>
+          <div class="cstat"><span class="n" id="aTasks">0</span><span class="l">Tasks</span></div>
+        </div>
       </div>
 
       <button class="cta" style="margin-top:14px" onclick="goSubmit()">Submit a clip</button>
@@ -990,7 +1023,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       var avInner = profile.avatar ? '<span class="av-clip"><img src="'+esc(profile.avatar)+'" alt=""></span>' : initial;
       el.className='prof';
       el.innerHTML='<div class="prof-av'+(profile.avatar?' img':'')+'">'+avInner+'</div>'+
-        '<div class="prof-b"><div class="prof-ign">'+name+'</div>'+
+        '<div class="prof-b"><div class="prof-name"><span class="prof-ign">'+name+'</span><span class="prof-badge">Creator</span></div>'+
         '<div class="prof-sub">'+handle+'</div></div>'+
         '<span class="prof-edit">Edit</span>';
     }else{
@@ -1095,7 +1128,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       : subs.filter(function(s){return s.status==='approved';}).reduce(function(a,s){return a+(s.diamonds||0);},0);
     document.getElementById('aSubs').textContent=subs.length.toLocaleString('en-US');
     document.getElementById('aViews').textContent=(liveViews||totalViews||0).toLocaleString('en-US');
-    document.getElementById('aEarned').innerHTML=diaSvg()+' '+(totalEarned||0).toLocaleString('en-US');
+    document.getElementById('aEarned').textContent=(totalEarned||0).toLocaleString('en-US');
     // tab badge: number of active (pending/approved) clips
     var active=subs.filter(function(s){return s.status==='pending'||s.status==='approved';}).length;
     var badge=document.getElementById('clipsBadge');
