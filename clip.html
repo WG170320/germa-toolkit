@@ -404,33 +404,42 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   border:none;border-radius:11px;padding:11px 18px;font-size:14px;cursor:pointer}
 .earnbal .eb-wd:active{transform:translateY(1px)}
 
-/* withdraw tier picker */
-.wd-bal{margin-top:14px;font-size:13px;color:var(--muted)}
-.wd-bal b{color:var(--dia-hi);font-family:var(--mono);display:inline-flex;align-items:center;gap:5px}
-.wd-bal b svg{width:14px;height:14px}
-.wd-tiers{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.wd-tier{background:#0d0e12;border:1px solid var(--line);border-radius:12px;padding:12px 6px;cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;gap:3px}
-.wd-tier .t-dia{display:flex;align-items:center;gap:5px;color:var(--dia-hi);font-family:var(--mono);font-weight:700;font-size:15px}
-.wd-tier .t-dia svg{width:15px;height:15px}
-.wd-tier .t-peso{font-size:10.5px;color:var(--faint)}
-.wd-tier:active{transform:translateY(1px)}
-.wd-tier.dis{opacity:.32;pointer-events:none}
-.wd-methods{margin-top:16px;display:flex;gap:9px}
-.wd-m{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;padding:13px 4px;border-radius:14px;
-  border:1px solid var(--line);background:#0d0e12;color:var(--muted);cursor:pointer;
-  font-family:var(--f);font-weight:700;font-size:12px;transition:border-color .12s,background .12s}
-.wd-m .wm-ic{width:30px;height:30px;display:flex;align-items:center;justify-content:center}
-.wd-m .wm-ic svg{width:26px;height:26px}
-.wd-m .wm-logo{width:28px;height:28px;border-radius:7px;object-fit:cover}
-.wd-m.active{color:var(--text);border-color:var(--dia);background:rgba(56,189,248,.08)}
-.wd-m.rbx.active{border-color:#f2f2f2;background:rgba(255,255,255,.06);color:#fff}
-.wd-m.gc.active{border-color:#0a7cff;background:rgba(10,124,255,.12);color:#5aa8ff}
-.wd-dest{margin-top:14px}
+/* ---- withdraw: numbered steps, method cards, selectable amount chips ---- */
+.wd-step{margin-top:22px;display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--text)}
+.wd-step .wd-stepn{width:20px;height:20px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--brand);background:rgba(255,212,0,.12);border:1px solid rgba(255,212,0,.3)}
+
+.wd-methods{margin-top:11px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.wd-m{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px 12px;border-radius:15px;
+  border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;position:relative;
+  font-family:var(--f);font-weight:700;font-size:13px;transition:border-color .14s,background .14s,transform .06s}
+.wd-m:active{transform:scale(.98)}
+.wd-m .wm-ic{width:34px;height:34px;display:flex;align-items:center;justify-content:center}
+.wd-m .wm-ic svg{width:30px;height:30px}
+.wd-m .wm-logo{width:32px;height:32px;border-radius:9px;object-fit:cover}
+.wd-m .wm-rate{font-size:10px;font-weight:600;color:var(--faint);letter-spacing:.01em}
+.wd-m.active{color:var(--text);border-color:var(--dia);background:rgba(56,189,248,.10);box-shadow:0 0 0 1px var(--dia) inset}
+.wd-m.active .wm-rate{color:var(--dia-hi)}
+.wd-m.rbx.active{border-color:#e9edf2;background:rgba(255,255,255,.07);color:#fff;box-shadow:0 0 0 1px rgba(233,237,242,.7) inset}
+.wd-m.rbx.active .wm-rate{color:#d7dce3}
+.wd-m.gc.active{border-color:#2b8cff;background:rgba(10,124,255,.14);color:#7ab6ff;box-shadow:0 0 0 1px #2b8cff inset}
+.wd-m.gc.active .wm-rate{color:#7ab6ff}
+
+.wd-dest{margin-top:11px;background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:14px}
 .wd-dest .field:first-child{margin-top:0}
-.wd-note{margin-top:14px;font-size:12.5px;color:var(--muted);background:#0d0e12;border:1px solid var(--line);
-  border-radius:11px;padding:11px 13px}
-.wd-note b{color:var(--good)}
+.wd-dest .field + .field{margin-top:12px}
+
+.wd-tiers{margin-top:11px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.wd-tier{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:13px 6px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:3px;transition:border-color .12s,background .12s,transform .06s}
+.wd-tier:active{transform:scale(.97)}
+.wd-tier .t-dia{display:flex;align-items:center;gap:4px;color:var(--text);font-family:var(--mono);font-weight:700;font-size:15px}
+.wd-tier .t-dia svg{width:14px;height:14px}
+.wd-tier .t-peso{display:flex;align-items:center;gap:3px;font-size:10.5px;color:var(--faint)}
+.wd-tier .t-peso svg{width:11px;height:11px}
+.wd-tier.sel{border-color:var(--brand);background:rgba(255,212,0,.10);box-shadow:0 0 0 1px var(--brand) inset}
+.wd-tier.sel .t-dia{color:var(--brand)}
+.wd-tier.dis{opacity:.3;pointer-events:none}
 /* full-screen withdraw page */
 .wdpage{position:fixed;inset:0;z-index:45;background:var(--bg);display:none;flex-direction:column}
 .wdpage.open{display:flex}
@@ -440,14 +449,33 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .wdp-back svg{width:20px;height:20px}
 .wdp-back:active{transform:scale(.96)}
 .wdp-title{font-weight:700;font-size:18px}
-.wdpage-body{flex:1;overflow-y:auto;padding:20px 16px 40px;max-width:var(--maxw);margin:0 auto;width:100%}
-.wd-balcard{background:radial-gradient(130% 150% at 50% -30%,rgba(56,189,248,.18),transparent 60%),var(--surface);
-  border:1px solid var(--line);border-radius:18px;padding:22px 18px;text-align:center}
-.wd-ballab{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.1em}
-.wd-balamt{margin-top:10px;font-family:var(--mono);font-weight:700;font-size:38px;line-height:1;color:var(--dia-hi);
+.wdpage-body{flex:1;overflow-y:auto;padding:20px 16px 28px;max-width:var(--maxw);margin:0 auto;width:100%}
+/* balance hero */
+.wd-hero{position:relative;overflow:hidden;text-align:center;border:1px solid var(--line);border-radius:20px;padding:24px 18px 20px;
+  background:
+    radial-gradient(120% 150% at 50% -35%,rgba(56,189,248,.20),transparent 60%),
+    linear-gradient(180deg,var(--surface2),var(--surface))}
+.wd-hero::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--dia),var(--dia-hi),transparent)}
+.wd-ballab{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.wd-balamt{margin-top:10px;font-family:var(--mono);font-weight:700;font-size:44px;line-height:1;color:var(--dia-hi);letter-spacing:-.02em;
   display:flex;align-items:center;justify-content:center;gap:10px}
-.wd-bigdia{width:40px;height:40px;flex:0 0 auto}
-.wd-lab{margin-top:18px;font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.wd-bigdia{width:42px;height:42px;flex:0 0 auto}
+.wd-herosub{margin-top:11px;font-size:12.5px;color:var(--muted)}
+
+/* sticky confirm bar */
+.wd-ctabar{flex:0 0 auto;padding:12px 16px calc(14px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line);background:linear-gradient(180deg,rgba(11,12,15,.85),var(--bg) 45%);backdrop-filter:blur(8px)}
+.wd-ctabar .wd-ctatrust{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11.5px;color:var(--muted);margin-bottom:11px}
+.wd-ctabar .wd-ctatrust svg{width:14px;height:14px;color:var(--good)}
+.wd-ctarow{display:flex;align-items:center;gap:13px;max-width:var(--maxw);margin:0 auto}
+.wd-ctasum{flex:1;min-width:0;font-size:12.5px;line-height:1.3;color:var(--muted)}
+.wd-ctasum b{display:block;color:var(--text);font-size:15px;font-weight:800;margin-top:1px}
+.wd-ctabtn{flex:0 0 auto;background:var(--brand);color:#0b0b0c;border:none;border-radius:13px;padding:15px 26px;
+  font-family:var(--f);font-weight:800;font-size:15px;cursor:pointer;transition:filter .12s,transform .06s;
+  box-shadow:0 10px 26px -12px rgba(255,212,0,.6)}
+.wd-ctabtn:active{transform:translateY(1px)}
+.wd-ctabtn:disabled{background:#2a2e37;color:var(--faint);box-shadow:none;cursor:not-allowed}
 
 /* profile setup gate — must fill this before entering Germa Creators */
 .gate{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:24px;
@@ -780,29 +808,54 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     <div class="wdp-title">Withdraw</div>
   </div>
   <div class="wdpage-body">
-    <div class="wd-balcard">
-      <div class="wd-ballab">Available to withdraw</div>
+    <!-- balance hero -->
+    <div class="wd-hero">
+      <div class="wd-ballab">Available balance</div>
       <div class="wd-balamt"><svg class="wd-bigdia" viewBox="0 0 32 32"><use href="#dia"/></svg><span id="wdBal">0</span></div>
+      <div class="wd-herosub" id="wdHeroSub">Cash out as Diamonds, Robux, or GCash</div>
     </div>
-    <div class="wd-lab">Payout method</div>
+
+    <!-- 1. method -->
+    <div class="wd-step"><span class="wd-stepn">1</span>Where to send it</div>
     <div class="wd-methods">
       <button class="wd-m active" id="wdm-diamonds" type="button" onclick="setWdMethod('diamonds')">
         <span class="wm-ic"><svg viewBox="0 0 32 30"><use href="#dia"/></svg></span>
         <span class="wm-lab">Diamonds</span>
+        <span class="wm-rate">to Game ID</span>
       </button>
       <button class="wd-m rbx" id="wdm-roblox" type="button" onclick="setWdMethod('roblox')">
         <span class="wm-ic"><img class="wm-logo" src="./assets/roblox.jpg" alt="Roblox"></span>
         <span class="wm-lab">Roblox</span>
+        <span class="wm-rate">1 = 1 Robux</span>
       </button>
       <button class="wd-m gc" id="wdm-gcash" type="button" onclick="setWdMethod('gcash')">
         <span class="wm-ic"><img class="wm-logo" src="./assets/gcash.jpg" alt="GCash"></span>
         <span class="wm-lab">GCash</span>
+        <span class="wm-rate">1 = &#8369;1</span>
       </button>
     </div>
+
+    <!-- 2. destination -->
+    <div class="wd-step"><span class="wd-stepn">2</span><span id="wdDestLab">Account details</span></div>
     <div id="wdDest"></div>
-    <div class="wd-lab" style="margin-top:16px">Choose amount</div>
+
+    <!-- 3. amount -->
+    <div class="wd-step"><span class="wd-stepn">3</span>Choose amount</div>
     <div class="wd-tiers" id="wdTiers"></div>
+
     <div class="msg" id="withdrawMsg"></div>
+  </div>
+
+  <!-- sticky confirm bar -->
+  <div class="wd-ctabar">
+    <div class="wd-ctatrust">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+      Reviewed and paid by the team
+    </div>
+    <div class="wd-ctarow">
+      <div class="wd-ctasum" id="wdCtaSum">Pick an amount above</div>
+      <button class="wd-ctabtn" id="wdCtaBtn" type="button" onclick="submitWithdraw()" disabled>Withdraw</button>
+    </div>
   </div>
 </div>
 
@@ -1187,23 +1240,28 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 
   // All methods convert 1:1 to the diamond cost (1 diamond = 1 Robux = 1 peso).
   var WD_METHOD='diamonds';
+  var WD_AMOUNT=0; // selected denomination (in the method's own unit == diamonds, 1:1)
   var WD_CFG={
     diamonds:{ tiers:DIA_TIERS, min:5 },
     roblox:{ tiers:[100,200,400,800,1000,2000,5000], min:100 },
     gcash:{ tiers:[50,100,200,300,500,1000], min:50 }
   };
+  var METHOD_LABEL={diamonds:'MLBB account details',roblox:'Roblox account',gcash:'GCash account'};
   function showWdPage(on){ var p=document.getElementById('wdPage'); if(p){ p.classList.toggle('open',on); document.body.style.overflow=on?'hidden':''; } }
   function closeWithdraw(){ showWdPage(false); }
   function openWithdraw(){
     if(!PROF){ openProfile(); showMsg('profileMsg','Set up your payout profile first, then withdraw.','info'); return; }
     clearMsg('withdrawMsg');
+    WD_AMOUNT=0;
     setWdMethod(WD_METHOD);
     showWdPage(true);
   }
   function setWdMethod(m){
     WD_METHOD=m;
+    WD_AMOUNT=0; // tiers differ per method; clear any prior selection
     ['diamonds','roblox','gcash'].forEach(function(x){ var b=document.getElementById('wdm-'+x); if(b) b.classList.toggle('active',x===m); });
-    renderWdDest(); renderWdTiers();
+    var dl=document.getElementById('wdDestLab'); if(dl) dl.textContent=METHOD_LABEL[m]||'Account details';
+    renderWdDest(); renderWdTiers(); updateWdCta();
   }
   function renderWdDest(){
     var el=document.getElementById('wdDest'); if(!el) return;
@@ -1221,13 +1279,40 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     var el=document.getElementById('wdTiers'); if(!el) return;
     var tiers=(WD_CFG[WD_METHOD]||WD_CFG.diamonds).tiers;
     el.innerHTML=tiers.map(function(t){
-      var dis=(t>BAL)?' dis':''; // diamond cost = t (1:1)
+      var cls='wd-tier'+(t>BAL?' dis':'')+(t===WD_AMOUNT?' sel':''); // diamond cost = t (1:1)
       var main, sub;
       if(WD_METHOD==='roblox'){ main=t.toLocaleString('en-US')+' Robux'; sub=diaSvg()+t.toLocaleString('en-US'); }
       else if(WD_METHOD==='gcash'){ main='&#8369;'+t.toLocaleString('en-US'); sub=diaSvg()+t.toLocaleString('en-US'); }
       else { main=diaSvg()+t.toLocaleString('en-US'); sub='&#8776; &#8369;'+t.toLocaleString('en-US'); }
-      return '<div class="wd-tier'+dis+'" onclick="doWithdrawTier('+t+')"><div class="t-dia">'+main+'</div><div class="t-peso">'+sub+'</div></div>';
+      return '<div class="'+cls+'" onclick="selectWdAmount('+t+')"><div class="t-dia">'+main+'</div><div class="t-peso">'+sub+'</div></div>';
     }).join('');
+  }
+  function selectWdAmount(t){
+    if(t>BAL){ showMsg('withdrawMsg','Not enough Diamonds for that amount.','err'); return; }
+    clearMsg('withdrawMsg');
+    WD_AMOUNT=t; renderWdTiers(); updateWdCta();
+  }
+  // What the clipper receives, in the chosen method's own words.
+  function payoutText(t){
+    if(WD_METHOD==='roblox') return t.toLocaleString('en-US')+' Robux';
+    if(WD_METHOD==='gcash') return '₱'+t.toLocaleString('en-US')+' via GCash';
+    return t.toLocaleString('en-US')+' Diamonds';
+  }
+  function updateWdCta(){
+    var sum=document.getElementById('wdCtaSum'), btn=document.getElementById('wdCtaBtn');
+    if(!sum||!btn) return;
+    if(WD_AMOUNT>0){
+      sum.innerHTML='You’ll get<b>'+payoutText(WD_AMOUNT)+'</b>';
+      btn.disabled=false;
+      btn.textContent='Withdraw now';
+    }else{
+      sum.innerHTML='Pick an amount above';
+      btn.disabled=true;
+      btn.textContent='Withdraw';
+    }
+  }
+  function submitWithdraw(){
+    if(WD_AMOUNT>0) doWithdrawTier(WD_AMOUNT);
   }
   async function doWithdrawTier(target){
     clearMsg('withdrawMsg');
@@ -1252,6 +1337,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     var r=await api('germaClipWithdraw',{method:WD_METHOD, target:target, amount:cost, dest:dest});
     if(r && r.ok){
       showMsg('withdrawMsg','Withdrawal requested.','ok');
+      WD_AMOUNT=0; updateWdCta();
       await refreshMine();
       setTimeout(function(){ closeWithdraw(); },1000);
     }else{
