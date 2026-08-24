@@ -188,6 +188,8 @@ svg{display:block}
 .lrow.top3 .lb-medal{background:linear-gradient(135deg,#e6b489,#b9793f)}
 .lrow.top1{background:rgba(255,212,0,.05)}
 .lrow .pf{font-weight:700;font-size:13px;color:var(--muted)}
+.lrow .pf.img{background:#0d0e12;overflow:hidden}
+.lrow .pf.img img{width:100%;height:100%;object-fit:cover;display:block}
 
 /* payout */
 .payout{margin-top:14px;background:
@@ -496,6 +498,18 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .gate-foot{margin-top:14px;font-size:12px;color:var(--faint)}
 .gate-foot .dia{opacity:.8}
 
+/* circular photo picker (gate + profile modal) */
+.avpick{margin:18px auto 4px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;width:max-content}
+.avpick-ring{width:96px;height:96px;border-radius:50%;padding:3px;
+  background:conic-gradient(from 210deg,var(--brand),var(--dia),var(--brand-hi),var(--brand));
+  box-shadow:0 12px 30px -14px rgba(56,189,248,.5)}
+.avpick-img{width:100%;height:100%;border-radius:50%;overflow:hidden;background:#0d0e12;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:var(--text)}
+.avpick-img.ph{color:var(--faint);font-size:34px;font-weight:300;border:1px dashed #3a4048}
+.avpick-img img{width:100%;height:100%;object-fit:cover;display:block}
+.avpick-lab{font-size:12.5px;font-weight:700;color:var(--dia-hi)}
+.modal .avpick{margin-top:6px}
+
 /* submission rows are tappable; views + earnings always visible, details on tap */
 .sub-row{cursor:pointer}
 .sub-info .h.eye{font-weight:700;font-size:15px}
@@ -780,9 +794,13 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 <!-- profile modal -->
 <div class="modal" id="mProfile" onclick="if(event.target===this)closeModal('mProfile')">
   <div class="modal-card">
-    <div class="modal-h"><div class="modal-t">Your TikTok</div><button class="modal-x" type="button" onclick="closeModal('mProfile')">&times;</button></div>
-    <div class="modal-sub">The username you post your clips from. Editable once a week.</div>
-    <div class="field"><label>TikTok username</label><input id="fUser" type="text" autocapitalize="none" autocomplete="off" placeholder="e.g. yourtiktok"></div>
+    <div class="modal-h"><div class="modal-t">Your profile</div><button class="modal-x" type="button" onclick="closeModal('mProfile')">&times;</button></div>
+    <div class="modal-sub">Your name and photo — how you show up on the leaderboard.</div>
+    <div class="avpick" id="mAvPick" onclick="pickAvatar(event)">
+      <div class="avpick-ring"><div class="avpick-img ph" id="mAvPrev">+</div></div>
+      <span class="avpick-lab" id="mAvLab">Change photo</span>
+    </div>
+    <div class="field"><label>Your name</label><input id="fName" type="text" maxlength="24" autocomplete="name" placeholder="Your name"></div>
     <button class="cta" type="button" onclick="saveProfile()">Save</button>
     <div class="msg" id="profileMsg"></div>
   </div>
@@ -876,11 +894,15 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     <div class="gate-logo"><img src="./assets/logo.png" alt=""></div>
     <div class="gate-brand"><b>GERMA</b> Creators</div>
     <h2 class="gate-h">Set up your <span class="hl">creator profile</span></h2>
-    <p class="gate-sub">Enter the TikTok username you post your clips from. We use it to confirm your videos and pull your name and photo automatically.</p>
-    <div class="field"><label>TikTok username</label><input id="gUser" type="text" autocapitalize="none" autocomplete="off" placeholder="e.g. yourtiktok"></div>
+    <p class="gate-sub">Add your name and a photo. This is your creator identity for the rewards program.</p>
+    <div class="avpick" id="gateAvPick" onclick="pickAvatar(event)">
+      <div class="avpick-ring"><div class="avpick-img ph" id="gateAvPrev">+</div></div>
+      <span class="avpick-lab" id="gateAvLab">Add photo</span>
+    </div>
+    <div class="field"><label>Your name</label><input id="gName" type="text" maxlength="24" autocomplete="name" placeholder="e.g. Gwenn Garcia"></div>
     <button class="cta" type="button" onclick="saveProfileGate()">Enter Germa Creators</button>
     <div class="msg" id="gateMsg"></div>
-    <div class="gate-foot">Editable once a week. Your MLBB Game ID is asked only when you withdraw <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div>
+    <div class="gate-foot">Editable later. Your MLBB Game ID is asked only when you withdraw <svg class="dia" viewBox="0 0 32 30"><use href="#dia"/></svg></div>
   </div>
 </div>
 
@@ -904,14 +926,24 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   var PROF=null;
   function openModal(id){ var m=document.getElementById(id); if(m){ m.classList.add('open'); document.body.style.overflow='hidden'; } }
   function closeModal(id){ var m=document.getElementById(id); if(m){ m.classList.remove('open'); document.body.style.overflow=''; } }
+  var PENDING_AVATAR=''; // resized data URL held until the profile is saved (name + photo together)
   function openProfile(){
-    if(PROF){ var a=document.getElementById('fUser'); if(a) a.value=PROF.tiktokUser||''; }
     clearMsg('profileMsg');
+    var nm=document.getElementById('fName'); if(nm) nm.value=(PROF&&PROF.name)||'';
+    PENDING_AVATAR=(PROF&&PROF.avatar)||'';
+    setAvatarPreview('mAvPrev','mAvLab',PENDING_AVATAR,'Change photo');
     openModal('mProfile');
   }
-  // Profile photo: open the picker (needs the app's file-chooser), shrink to a small
-  // square thumbnail on-device, then store it on the profile.
-  function pickAvatar(e){ if(e){ e.stopPropagation(); } if(!PROF){ openProfile(); return; } var inp=document.getElementById('avatarInput'); if(inp) inp.click(); }
+  // Profile photo: open the picker (in-app it uses the file-chooser bridge), shrink to a
+  // small square thumbnail on-device, and hold it until the profile is saved.
+  function pickAvatar(e){ if(e){ e.stopPropagation(); } var inp=document.getElementById('avatarInput'); if(inp) inp.click(); }
+  function setAvatarPreview(imgId,labId,data,defaultLab){
+    var el=document.getElementById(imgId); if(el){
+      if(data){ el.className='avpick-img'; el.innerHTML='<img src="'+esc(data)+'" alt="">'; }
+      else { el.className='avpick-img ph'; el.textContent='+'; }
+    }
+    var lab=document.getElementById(labId); if(lab) lab.textContent=data?'Change photo':(defaultLab||'Add photo');
+  }
   function onAvatarPicked(e){
     var f=e.target.files && e.target.files[0]; e.target.value='';
     if(!f) return;
@@ -926,32 +958,26 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
         ctx.drawImage(img,(size-w)/2,(size-h)/2,w,h);
         var data;
         try{ data=c.toDataURL('image/jpeg',0.72); }catch(err){ alert('Could not read that image.'); return; }
-        uploadAvatar(data);
+        PENDING_AVATAR=data;
+        setAvatarPreview('gateAvPrev','gateAvLab',data);
+        setAvatarPreview('mAvPrev','mAvLab',data);
       };
       img.onerror=function(){ alert('Could not read that image.'); };
       img.src=ev.target.result;
     };
     reader.readAsDataURL(f);
   }
-  async function uploadAvatar(data){
-    var r=await api('germaClipAvatar',{avatar:data});
-    if(r&&r.ok){ if(PROF){ PROF.avatar=data; renderProfileCard(PROF); } }
-    else { alert('Could not save photo'+((r&&r.error)?': '+r.error:'')); }
-  }
-  // Full-screen setup gate: shown until the clipper has a verified MLBB profile.
+  // Full-screen setup gate: shown until the clipper has a name + photo profile.
   function showGate(on){ var g=document.getElementById('profileGate'); if(g){ g.style.display=on?'flex':'none'; document.body.style.overflow=on?'hidden':''; } }
   async function saveProfileGate(){
-    var user=document.getElementById('gUser').value.trim().replace(/^@+/,'');
+    var name=document.getElementById('gName').value.trim();
     clearMsg('gateMsg');
-    if(!user){ showMsg('gateMsg','Enter your TikTok username.','err'); return; }
+    if(name.length<2){ showMsg('gateMsg','Enter your name.','err'); return; }
+    if(!PENDING_AVATAR){ showMsg('gateMsg','Add a profile photo to continue.','err'); return; }
     showMsg('gateMsg','Saving...','info');
-    var r=await api('germaClipProfile',{tiktokUser:user});
+    var r=await api('germaClipProfile',{name:name, avatar:PENDING_AVATAR});
     if(r&&r.ok){ showMsg('gateMsg','You are in!','ok'); await refreshMine(); setTimeout(function(){ showGate(false); },600); }
-    else{
-      var err=r&&r.error;
-      if(err==='cooldown'){ var days=r.days!=null?r.days:'a few'; showMsg('gateMsg','You can change your username again in '+days+' day(s).','err'); }
-      else showMsg('gateMsg', PROFILE_ERR[err]||'Could not save that username. Try again.','err');
-    }
+    else showMsg('gateMsg', PROFILE_ERR[r&&r.error]||'Could not save your profile. Try again.','err');
   }
   function goSubmit(){
     if(!PROF){ openProfile(); showMsg('profileMsg','Set up your payout profile first, then submit.','info'); return; }
@@ -1035,23 +1061,24 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   }
 
   var PROFILE_ERR={
-    bad_user:'That username looks invalid. Use only letters, numbers, dots and underscores.',
-    user_taken:'That TikTok username is already linked to another account.',
+    bad_name:'Enter a name (at least 2 characters).',
+    no_photo:'Add a profile photo to continue.',
+    photo_big:'That photo is too large. Try a different one.',
     network:'Could not reach the server. Check your connection and try again.'
   };
   var SUBMIT_ERR={
     bad_url:'That does not look like a valid TikTok video link.',
     closed:'Submissions are closed right now - the reward pool may be full.',
-    no_profile:'Set up your TikTok username first, then submit your clip.',
-    not_your_clip:'This TikTok is not from your registered username. Submit your own clips only.',
+    no_profile:'Set up your profile first, then submit your clip.',
     fetch_failed:'Could not read that TikTok link. Make sure it is public and try again.',
     duplicate:'This clip was already submitted.',
     network:'Could not reach the server. Check your connection and try again.'
   };
   var WITHDRAW_ERR={
     min:'You need at least the minimum balance to withdraw.',
-    no_profile:'Set up your TikTok username before withdrawing.',
+    no_profile:'Set up your profile before withdrawing.',
     no_dest:'Enter where to send your withdrawal.',
+    flagged:'This account is under review and can not withdraw right now.',
     insufficient:'Not enough balance for that withdrawal.',
     network:'Could not reach the server. Check your connection and try again.'
   };
@@ -1067,17 +1094,15 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   function renderProfileCard(profile){
     var el=document.getElementById('profileCard');
     if(!el) return;
-    if(profile && (profile.ign || profile.tiktokUser)){
+    if(profile && (profile.name || profile.ign)){
       PROF=profile;
-      var name=esc(profile.ign || ('@'+(profile.tiktokUser||'')));
-      var initial=esc((String(name).replace(/^@/,'').charAt(0)||'?').toUpperCase());
-      var handle='@'+esc(profile.tiktokUser||'');
-      // avatar comes from their TikTok automatically (set on first submit) - no manual pic
+      var name=esc(profile.name || profile.ign || 'Creator');
+      var initial=esc((String(name).charAt(0)||'?').toUpperCase());
       var avInner = profile.avatar ? '<span class="av-clip"><img src="'+esc(profile.avatar)+'" alt=""></span>' : initial;
       el.className='prof';
       el.innerHTML='<div class="prof-av'+(profile.avatar?' img':'')+'">'+avInner+'</div>'+
         '<div class="prof-b"><div class="prof-name"><span class="prof-ign">'+name+'</span><span class="prof-badge">Creator</span></div>'+
-        '<div class="prof-sub">'+handle+'</div></div>'+
+        '<div class="prof-sub">Germa Creator</div></div>'+
         '<span class="prof-edit">Edit</span>';
     }else{
       PROF=null;
@@ -1159,7 +1184,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   function renderMine(r){
     if(r.cfg && r.cfg.minWithdraw) CFG.minWithdraw=r.cfg.minWithdraw;
     renderProfileCard(r.profile);
-    showGate(!(r.profile && r.profile.tiktokUser)); // must set TikTok username before entering
+    showGate(!(r.profile && r.profile.name)); // must set name + photo before entering
     var bal=(r.balance && r.balance.balance) || 0;
     BAL=bal;
     var eb=document.getElementById('earnBal'); if(eb) eb.textContent=bal.toLocaleString('en-US');
@@ -1200,23 +1225,18 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   }
 
   async function saveProfile(){
-    var user=document.getElementById('fUser').value.trim().replace(/^@+/,'');
+    var name=document.getElementById('fName').value.trim();
     clearMsg('profileMsg');
-    if(!user){ showMsg('profileMsg','Enter your TikTok username.','err'); return; }
+    if(name.length<2){ showMsg('profileMsg','Enter your name.','err'); return; }
+    if(!PENDING_AVATAR){ showMsg('profileMsg','Add a profile photo.','err'); return; }
     showMsg('profileMsg','Saving...','info');
-    var r=await api('germaClipProfile',{tiktokUser:user});
+    var r=await api('germaClipProfile',{name:name, avatar:PENDING_AVATAR});
     if(r && r.ok){
       showMsg('profileMsg','Saved.','ok');
       await refreshMine();
       setTimeout(function(){ closeModal('mProfile'); },600);
     }else{
-      var err=r && r.error;
-      if(err==='cooldown'){
-        var days=r.days!=null?r.days:'a few';
-        showMsg('profileMsg','You can change your username again in '+days+' day(s).','err');
-      }else{
-        showMsg('profileMsg', PROFILE_ERR[err] || 'Could not save that username. Try again.', 'err');
-      }
+      showMsg('profileMsg', PROFILE_ERR[r&&r.error] || 'Could not save your profile. Try again.', 'err');
     }
   }
 
@@ -1360,8 +1380,8 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
       var initial=esc((String(r.ign||'?').trim().charAt(0)||'?').toUpperCase());
       var badge = rank<=3 ? '<div class="lb-medal">'+rank+'</div>' : '<div class="rk">'+rank+'</div>';
       var clips=(r.clips||0), cw=clips===1?' clip':' clips';
-      return '<div class="lrow'+cls+'">'+badge+
-        '<div class="pf">'+initial+'</div>'+
+      var pf = r.avatar ? '<div class="pf img"><img src="'+esc(r.avatar)+'" alt=""></div>' : '<div class="pf">'+initial+'</div>';
+      return '<div class="lrow'+cls+'">'+badge+pf+
         '<div class="nm"><div class="h">'+esc(r.ign||'Clipper')+'</div>'+
           '<div class="v">'+fmtViews(r.totalViews)+' views - '+clips+cw+'</div></div>'+
         '<div class="amt">'+diaSvg()+(r.totalEarned||0).toLocaleString('en-US')+'</div></div>';
