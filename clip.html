@@ -900,10 +900,35 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     if(!d){ d='web-'+Math.random().toString(36).slice(2)+Date.now(); localStorage.setItem('gc_dev',d); }
     return d;
   }
-  // Hardware signal + coarse device info from the native app (for fake/clone-account
-  // detection). Empty on web/older builds, so the backend simply fails open.
-  function hwId(){ try{ if(window.GermaClip && window.GermaClip.hwid) return String(window.GermaClip.hwid()||''); }catch(e){} return ''; }
-  function dInfo(){ try{ if(window.GermaClip && window.GermaClip.deviceInfo) return String(window.GermaClip.deviceInfo()||''); }catch(e){} return ''; }
+  // Device signal for fake/clone-account detection. Native app gives a hardware id
+  // (ANDROID_ID hash); on the website we fall back to a browser fingerprint so the same
+  // device/browser is still recognised across accounts. Both are 64-hex and never collide.
+  var WEB_FP='';
+  async function computeWebFp(){
+    if(WEB_FP) return WEB_FP;
+    var cached=''; try{ cached=localStorage.getItem('gc_fp')||''; }catch(e){}
+    try{
+      var parts=[navigator.userAgent||'', navigator.language||'', (navigator.languages||[]).join(','),
+        (screen.width+'x'+screen.height+'x'+screen.colorDepth), String(new Date().getTimezoneOffset()),
+        String(navigator.hardwareConcurrency||0), navigator.platform||'', String(navigator.deviceMemory||0)];
+      try{ var c=document.createElement('canvas'); var x=c.getContext('2d');
+        x.textBaseline='top'; x.font='14px Arial'; x.fillStyle='#f60'; x.fillRect(0,0,100,20);
+        x.fillStyle='#069'; x.fillText('germa-fp',2,2); parts.push(c.toDataURL()); }catch(e){}
+      var buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode('germaweb|'+parts.join('|')));
+      WEB_FP=Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+      try{ localStorage.setItem('gc_fp',WEB_FP); }catch(e){}
+    }catch(e){ WEB_FP=cached; } // SubtleCrypto missing (old/insecure) -> keep any cached fp
+    return WEB_FP;
+  }
+  function hwId(){
+    try{ if(window.GermaClip && window.GermaClip.hwid){ var h=String(window.GermaClip.hwid()||''); if(h) return h; } }catch(e){}
+    return WEB_FP; // browser fingerprint fallback for website users
+  }
+  function dInfo(){
+    try{ if(window.GermaClip && window.GermaClip.deviceInfo){ var d=String(window.GermaClip.deviceInfo()||''); if(d) return d; } }catch(e){}
+    var model=((navigator.platform||'web')+' / '+((navigator.userAgent||'').match(/(Chrome|Firefox|Safari|Edg|SamsungBrowser)\/[\d.]+/)||['browser'])[0]).slice(0,60);
+    return JSON.stringify({model:model, emu:false, web:true});
+  }
   async function api(fn,body){
     try{
       const r=await fetch(FN+'/'+fn,{method:'POST',headers:{'Content-Type':'application/json'},
@@ -1270,6 +1295,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     openModal('mClip');
   }
 
+  computeWebFp(); // prepare the browser fingerprint early so profile/submit carry a device signal
   refreshMine();
   loadStats();
 </script>
