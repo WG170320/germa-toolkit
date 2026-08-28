@@ -16,5 +16,11 @@
   "wait_temu_register": 10,
   "wait_temu_accept": 10,
   "wait_gearup_redeem": 8,
-  "wait_gearup_promo": 8
+  "wait_gearup_promo": 8,
+  "latest_version": 19,
+  "min_version": 1,
+  "force_update": false,
+  "update_url": "https://germatoolkit.com/",
+  "update_version_name": "2.4.6",
+  "update_message": ""
 }
