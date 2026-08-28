@@ -1,5 +1,11 @@
 {
   "enabled": true,
+  "watch_enabled": true,
+  "watch_link_1": "https://youtu.be/ZNndCFWTqFc",
+  "watch_link_2": "https://youtu.be/z11eSYs5WMY",
+  "watch_secs": 10,
+  "watch_forced": true,
+  "watch_relock_hours": 0,
   "temu_link": "https://temu.com/s/BPZxxqCydglwg",
   "temu_invite_link": "https://temu.com/s/BPZxxqCydglwg",
   "temu_invite_link_2": "",
