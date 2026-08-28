@@ -346,6 +346,13 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .gm-status.wait{color:#ffd98a;background:rgba(255,180,0,.1)}
 .gm-status.ok{color:var(--good);background:rgba(55,211,155,.1)}
 .gm-status.rej{color:#ff8f8f;background:rgba(255,90,90,.1);margin-bottom:12px}
+.gm-step.locked{opacity:.5}
+.gm-step.locked .gm-num{background:var(--line);color:var(--muted)}
+.gm-step.done .gm-num{background:var(--good);color:#04120c}
+.gm-locked{font-size:12.5px;color:var(--muted);font-style:italic}
+.gm-donerow{font-size:13px;font-weight:700;color:var(--good)}
+.gm-btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.gm-confirm{background:var(--brand)!important;color:#0b0b0c!important;border-color:var(--brand)!important}
 .tbtn{background:#0d0e12;color:var(--text);border:1px solid var(--line);border-radius:10px;
   font-family:var(--f);font-weight:700;font-size:12.5px;padding:8px 14px;cursor:pointer;white-space:nowrap}
 .tbtn:disabled{opacity:.55;cursor:not-allowed}
@@ -1263,33 +1270,58 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   function toastMini(m){ var d=document.createElement('div'); d.textContent=m; d.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1d2230;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.4)'; document.body.appendChild(d); setTimeout(function(){ d.remove(); },1600); }
   function copyCode(code){ try{ navigator.clipboard.writeText(code); }catch(e){ try{ var i=document.createElement('input'); i.value=code; document.body.appendChild(i); i.select(); document.execCommand('copy'); i.remove(); }catch(_){}} toastMini('Code copied: '+code); }
   function openExt(url){ try{ if(window.GermaClip&&window.GermaClip.openExternal){ window.GermaClip.openExternal(url); return; } }catch(e){} window.open(url,'_blank'); }
-  function gmStep(n,title,desc,inner){ return '<div class="gm-step"><div class="gm-num">'+n+'</div><div class="gm-scont"><div class="gm-st">'+esc(title)+'</div><div class="gm-sd">'+esc(desc)+'</div><div class="gm-sact">'+inner+'</div></div></div>'; }
-  function gmProofBlock(s){ if(s==='pending'||s==='done'||s==='approved') return '<div class="gm-proofdone">Screenshot submitted.</div>'; return '<div class="gm-proof" id="gmProof" onclick="pickGearShot()"><div class="gm-proofph">+ Tap to add screenshot</div></div>'; }
-  function gmFooter(t,s){
-    if(s==='done') return '<div class="gm-status ok">Claimed +'+(t.reward||0)+' diamonds. Thanks!</div>';
-    if(s==='approved') return '<button class="gm-claim" onclick="claimGear()">Claim +'+(t.reward||0)+'</button>';
-    if(s==='pending') return '<div class="gm-status wait">Under review — we\'ll approve your screenshot soon. Come back to claim.</div>';
-    var rej = s==='rejected' ? '<div class="gm-status rej">Rejected. Check your screenshot and submit again.</div>' : '';
-    return rej+'<button class="gm-submit" id="gmSubmit" onclick="submitGear()">Submit for review</button>';
+  function gmStepCard(n, locked, done, title, desc, inner){
+    return '<div class="gm-step'+(locked?' locked':'')+(done?' done':'')+'">'+
+      '<div class="gm-num">'+(done?'&#10003;':n)+'</div>'+
+      '<div class="gm-scont"><div class="gm-st">'+title+'</div><div class="gm-sd">'+esc(desc)+'</div><div class="gm-sact">'+inner+'</div></div></div>';
   }
+  function gmProofBlock(){ return '<div class="gm-proof" id="gmProof" onclick="pickGearShot()"><div class="gm-proofph">+ Tap to add screenshot</div></div>'; }
+  function gmStepsKey(id){ return 'gm_steps_'+id; }
+  function gmGetSteps(id){ try{ return JSON.parse(localStorage.getItem(gmStepsKey(id))||'{}'); }catch(e){ return {}; } }
+  function gmSetStep(id,k){ var s=gmGetSteps(id); s[k]=true; try{ localStorage.setItem(gmStepsKey(id),JSON.stringify(s)); }catch(e){} }
+  var GEAR_TIMER=null;
   function openGearMission(id){
     var t=TASKS.filter(function(x){return x.id===id;})[0]; if(!t) return;
     GEAR_TASK=t; GEAR_SHOT='';
-    var s=gearStatus(t);
     var ov=document.createElement('div'); ov.className='gm-ov'; ov.id='gmOv';
     ov.innerHTML='<div class="gm-page">'+
       '<div class="gm-ph"><button class="gm-back" onclick="closeGear()">&lsaquo;</button><div class="gm-ph-t">'+esc(t.title)+'</div><span class="gm-ph-amt">'+diaSvg()+(t.reward||0)+'</span></div>'+
-      '<div class="gm-body">'+
-        '<div class="gm-lead">Finish the steps, upload a screenshot as proof, then claim after we approve it.</div>'+
-        gmStep(1,'Download GearUp','Install the GearUp booster app.','<button class="gm-b" onclick="openExt(\''+esc(t.link)+'\')">Open Play Store</button>')+
-        gmStep(2,'Enter code WARLITO','Open GearUp and enter this code.','<div class="gm-code"><span>WARLITO</span><button class="gm-copy" onclick="copyCode(\'WARLITO\')">Copy</button></div>')+
-        gmStep(3,'Open GearUp','Launch GearUp so the code applies.','<button class="gm-b" onclick="openExt(\''+esc(t.link)+'\')">Open GearUp</button>')+
-        gmStep(4,'Screenshot proof','Screenshot GearUp showing WARLITO applied, then upload it.', gmProofBlock(s))+
-        '<div id="gmFoot" class="gm-footwrap">'+gmFooter(t,s)+'</div>'+
-      '</div></div>';
+      '<div class="gm-body" id="gmBody"></div></div>';
     document.body.appendChild(ov);
+    renderGearBody();
   }
-  function closeGear(){ var o=document.getElementById('gmOv'); if(o) o.remove(); GEAR_TASK=null; GEAR_SHOT=''; }
+  function renderGearBody(){
+    var t=GEAR_TASK; if(!t) return; var el=document.getElementById('gmBody'); if(!el) return;
+    var s=gearStatus(t);
+    if(s==='done'){ el.innerHTML='<div class="gm-lead">GearUp mission</div><div class="gm-footwrap"><div class="gm-status ok">Claimed +'+(t.reward||0)+' diamonds. Thanks!</div></div>'; return; }
+    if(s==='approved'){ el.innerHTML='<div class="gm-lead">GearUp mission</div><div class="gm-status ok">Approved! Claim your reward.</div><div class="gm-footwrap"><button class="gm-claim" onclick="claimGear()">Claim +'+(t.reward||0)+'</button></div>'; return; }
+    if(s==='pending'){ el.innerHTML='<div class="gm-lead">GearUp mission</div><div class="gm-footwrap"><div class="gm-status wait">Under review — we\'ll approve your screenshot soon. Come back to claim.</div></div>'; return; }
+    var st=gmGetSteps(t.id), s1=!!st.s1, s2=!!st.s2;
+    var rej = s==='rejected' ? '<div class="gm-status rej" style="margin-bottom:14px">Rejected. Redo the steps and submit again.</div>' : '';
+    el.innerHTML='<div class="gm-lead">Do the steps in order, upload a screenshot, then claim after we approve it.</div>'+rej+
+      gmStepCard(1, false, s1, 'Download / install GearUp', 'Install the GearUp booster app first — this unlocks the next steps.',
+        s1 ? '<div class="gm-donerow">Installed &#10003;</div>'
+           : '<div class="gm-btnrow"><button class="gm-b" onclick="gearOpenInstall()">Open Play Store</button><button class="gm-b gm-confirm" onclick="gearMark1()">I\'ve installed it</button></div>')+
+      gmStepCard(2, !s1, s2, 'Open GearUp &middot; 10s', 'Open GearUp (enter code WARLITO) and keep it open about 10 seconds.',
+        !s1 ? '<div class="gm-locked">Finish step 1 first</div>'
+           : (s2 ? '<div class="gm-donerow">Done &#10003;</div>'
+                 : '<div class="gm-code"><span>WARLITO</span><button class="gm-copy" onclick="copyCode(\'WARLITO\')">Copy</button></div><button class="gm-b" id="gm2btn" onclick="gearStep2()">Open GearUp</button>'))+
+      gmStepCard(3, !s2, false, 'Screenshot proof', 'Screenshot GearUp showing WARLITO applied, then upload it.',
+        !s2 ? '<div class="gm-locked">Finish step 2 first</div>'
+           : gmProofBlock()+'<div class="gm-footwrap"><button class="gm-submit" id="gmSubmit" onclick="submitGear()">Submit for review</button></div>');
+  }
+  function gearOpenInstall(){ if(GEAR_TASK) openExt(GEAR_TASK.link); }
+  function gearMark1(){ if(!GEAR_TASK) return; gmSetStep(GEAR_TASK.id,'s1'); renderGearBody(); }
+  function gearStep2(){
+    if(!GEAR_TASK) return; var id=GEAR_TASK.id; openExt(GEAR_TASK.link);
+    var startTs=Date.now();
+    if(GEAR_TIMER) clearInterval(GEAR_TIMER);
+    var tick=function(){ var left=Math.ceil((10000-(Date.now()-startTs))/1000); var b=document.getElementById('gm2btn');
+      if(left<=0){ clearInterval(GEAR_TIMER); GEAR_TIMER=null; gmSetStep(id,'s2'); renderGearBody(); }
+      else if(b){ b.disabled=true; b.textContent='Wait '+left+'s'; } };
+    GEAR_TIMER=setInterval(tick,500); tick();
+  }
+  function closeGear(){ if(GEAR_TIMER){ clearInterval(GEAR_TIMER); GEAR_TIMER=null; } var o=document.getElementById('gmOv'); if(o) o.remove(); GEAR_TASK=null; GEAR_SHOT=''; }
   function reopenGear(){ var id=GEAR_TASK&&GEAR_TASK.id; closeGear(); if(id) openGearMission(id); }
   function pickGearShot(){ var i=document.getElementById('gearShotInput'); if(i) i.click(); }
   function onGearShotPicked(e){
