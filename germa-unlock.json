@@ -5,7 +5,7 @@
   "watch_link_2": "https://youtu.be/z11eSYs5WMY",
   "watch_secs": 10,
   "watch_forced": true,
-  "watch_relock_hours": 0,
+  "watch_relock_hours": 0.001,
   "temu_link": "https://temu.com/s/BPZxxqCydglwg",
   "temu_invite_link": "https://temu.com/s/BPZxxqCydglwg",
   "temu_invite_link_2": "",
