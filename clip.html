@@ -293,6 +293,59 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 .task-r{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:7px}
 .task-r .amt{font-family:var(--mono);font-weight:700;color:var(--dia-hi);display:flex;align-items:center;gap:5px;font-size:13px}
 .task-r .amt svg{width:14px;height:14px}
+/* GearUp mission — hero card + step page */
+.gm-hero{position:relative;overflow:hidden;margin-top:12px;background:linear-gradient(135deg,#171922,#0f1017);border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;cursor:pointer}
+.gm-hero:first-child{margin-top:0}
+.gm-hero:active{transform:translateY(1px)}
+.gm-glow{position:absolute;right:-40px;top:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,212,0,.18),transparent 70%);pointer-events:none}
+.gm-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;position:relative}
+.gm-tag{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--brand);background:rgba(255,212,0,.12);padding:4px 8px;border-radius:6px}
+.gm-amt{font-family:var(--mono);font-weight:800;color:var(--dia-hi);display:flex;align-items:center;gap:5px;font-size:15px}
+.gm-amt svg{width:16px;height:16px}
+.gm-title{font-size:18px;font-weight:800;color:var(--text);position:relative}
+.gm-sub{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.45;position:relative}
+.gm-foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;position:relative}
+.gm-badge{font-size:11px;font-weight:700;color:var(--muted);background:rgba(255,255,255,.05);padding:5px 9px;border-radius:20px}
+.gm-badge.go{color:#0b0b0c;background:var(--brand)}
+.gm-badge.wait{color:#ffd98a;background:rgba(255,180,0,.14)}
+.gm-badge.rej{color:#ff8f8f;background:rgba(255,90,90,.14)}
+.gm-badge.done{color:var(--good);background:rgba(55,211,155,.14)}
+.gm-cta{font-size:13px;font-weight:800;color:var(--brand)}
+.gm-ov{position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto;animation:gmin .18s ease}
+@keyframes gmin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.gm-page{min-height:100%;display:flex;flex-direction:column}
+.gm-ph{position:sticky;top:0;display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(11,12,15,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:2}
+.gm-back{flex:0 0 auto;width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:22px;line-height:1;cursor:pointer}
+.gm-ph-t{flex:1;font-weight:800;font-size:16px;color:var(--text)}
+.gm-ph-amt{font-family:var(--mono);font-weight:800;color:var(--dia-hi);display:flex;align-items:center;gap:5px}
+.gm-ph-amt svg{width:15px;height:15px}
+.gm-body{padding:16px;max-width:640px;width:100%;margin:0 auto}
+.gm-lead{font-size:13.5px;color:var(--muted);line-height:1.5;margin-bottom:16px}
+.gm-step{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.gm-num{flex:0 0 auto;width:28px;height:28px;border-radius:9px;background:var(--brand);color:#0b0b0c;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.gm-scont{flex:1;min-width:0}
+.gm-st{font-weight:700;font-size:14.5px;color:var(--text)}
+.gm-sd{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.gm-sact{margin-top:10px}
+.gm-b{background:var(--surface);border:1px solid var(--line);color:var(--text);border-radius:11px;padding:10px 16px;font-weight:700;font-size:13.5px;cursor:pointer}
+.gm-b:active{transform:translateY(1px)}
+.gm-code{display:inline-flex;align-items:center;border:1px dashed var(--brand);border-radius:11px;overflow:hidden}
+.gm-code span{font-family:var(--mono);font-weight:800;letter-spacing:2px;color:var(--brand);padding:10px 14px;font-size:15px}
+.gm-copy{background:var(--brand);color:#0b0b0c;border:none;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer}
+.gm-proof{border:1.5px dashed var(--line);border-radius:14px;min-height:150px;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:var(--surface)}
+.gm-proof.has{border-style:solid;padding:0}
+.gm-proof img{width:100%;display:block}
+.gm-proofph{color:var(--muted);font-size:13px;font-weight:600}
+.gm-proofdone{color:var(--good);font-size:13px;font-weight:700;padding:12px 0}
+.gm-footwrap{margin-top:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+.gm-submit,.gm-claim{width:100%;border:none;border-radius:13px;padding:15px;font-weight:800;font-size:15px;cursor:pointer}
+.gm-submit{background:var(--brand);color:#0b0b0c}
+.gm-claim{background:var(--good);color:#04120c}
+.gm-submit:disabled{opacity:.6;cursor:default}
+.gm-status{text-align:center;font-size:13.5px;font-weight:700;padding:14px;border-radius:12px}
+.gm-status.wait{color:#ffd98a;background:rgba(255,180,0,.1)}
+.gm-status.ok{color:var(--good);background:rgba(55,211,155,.1)}
+.gm-status.rej{color:#ff8f8f;background:rgba(255,90,90,.1);margin-bottom:12px}
 .tbtn{background:#0d0e12;color:var(--text);border:1px solid var(--line);border-radius:10px;
   font-family:var(--f);font-weight:700;font-size:12.5px;padding:8px 14px;cursor:pointer;white-space:nowrap}
 .tbtn:disabled{opacity:.55;cursor:not-allowed}
@@ -891,6 +944,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
 
 <!-- hidden picker for the profile photo (WebView needs the app's file-chooser bridge) -->
 <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="onAvatarPicked(event)">
+<input id="gearShotInput" type="file" accept="image/*" style="display:none" onchange="onGearShotPicked(event)">
 
 <!-- profile setup gate (must fill before entering) -->
 <div id="profileGate" class="gate">
@@ -1150,20 +1204,43 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
   }
 
   /* ---------- tasks: render + timer + claim ---------- */
-  var TASKS=[], TCLAIMS={}, TSTATE={}; // TSTATE[id]='idle'|'running'|'ready'
+  var TASKS=[], TCLAIMS={}, TSTATE={}, GEARSUBS={}; // TSTATE[id]='idle'|'running'|'ready'
+  function gearStatus(t){ // '', 'pending', 'approved', 'rejected', 'done'
+    if(TCLAIMS[t.id]) return 'done';
+    var g=GEARSUBS[t.id]||{}; return g.status||'';
+  }
   function renderTasks(){
     var el=document.getElementById('taskList'); if(!el) return;
     if(!TASKS.length){ el.innerHTML='<div class="sublist"><div class="empty">No tasks right now. Check back soon.</div></div>'; return; }
-    el.innerHTML=TASKS.map(function(t){
+    var html='';
+    // Mission tasks (screenshot-proof, e.g. GearUp) render as a featured hero that opens a step page.
+    TASKS.filter(function(t){return t.type==='mission';}).forEach(function(t){
+      var s=gearStatus(t);
+      var badge = s==='done' ? '<span class="gm-badge done">Claimed</span>'
+        : s==='approved' ? '<span class="gm-badge go">Approved &middot; claim now</span>'
+        : s==='pending' ? '<span class="gm-badge wait">Under review</span>'
+        : s==='rejected' ? '<span class="gm-badge rej">Rejected &middot; try again</span>'
+        : '<span class="gm-badge">4 steps &middot; screenshot proof</span>';
+      html+='<div class="gm-hero" onclick="openGearMission(\''+t.id+'\')">'+
+        '<div class="gm-glow"></div>'+
+        '<div class="gm-top"><span class="gm-tag">MISSION</span><span class="gm-amt">'+diaSvg()+(t.reward||0)+'</span></div>'+
+        '<div class="gm-title">'+esc(t.title)+'</div>'+
+        '<div class="gm-sub">'+esc(t.desc)+'</div>'+
+        '<div class="gm-foot">'+badge+'<span class="gm-cta">'+(s==='approved'?'Claim':s==='done'?'View':s==='pending'?'View':'Start mission')+' &rsaquo;</span></div>'+
+      '</div>';
+    });
+    // Simple honor tasks (link + timer + claim).
+    TASKS.filter(function(t){return t.type!=='mission';}).forEach(function(t){
       var done=!!TCLAIMS[t.id], st=TSTATE[t.id]||'idle';
       var btn = done ? '<span class="pill approved">Done</span>'
         : st==='running' ? '<button class="tbtn" disabled id="tb-'+t.id+'">Wait '+t.secs+'s</button>'
         : st==='ready' ? '<button class="tbtn go" onclick="claimTask(\''+t.id+'\')">Claim</button>'
         : '<button class="tbtn" onclick="startTask(\''+t.id+'\')">Start</button>';
-      return '<div class="task-card"><div class="task-b"><div class="task-t">'+esc(t.title)+'</div>'+
+      html+='<div class="task-card"><div class="task-b"><div class="task-t">'+esc(t.title)+'</div>'+
         '<div class="task-d">'+esc(t.desc)+'</div></div>'+
         '<div class="task-r"><span class="amt">'+diaSvg()+(t.reward||0)+'</span>'+btn+'</div></div>';
-    }).join('');
+    });
+    el.innerHTML=html;
   }
   function startTask(id){
     var t=TASKS.filter(function(x){return x.id===id;})[0]; if(!t) return;
@@ -1179,6 +1256,73 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     var r=await api('germaTaskClaim',{taskId:id});
     if(r&&r.ok){ TCLAIMS[id]=true; TSTATE[id]='done'; await refreshMine(); }
     else { alert((r&&r.error==='already')?'Already claimed.':'Could not claim. Try again.'); }
+  }
+
+  /* ---------- GearUp mission: steps + screenshot proof + review + claim ---------- */
+  var GEAR_TASK=null, GEAR_SHOT='';
+  function toastMini(m){ var d=document.createElement('div'); d.textContent=m; d.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#1d2230;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.4)'; document.body.appendChild(d); setTimeout(function(){ d.remove(); },1600); }
+  function copyCode(code){ try{ navigator.clipboard.writeText(code); }catch(e){ try{ var i=document.createElement('input'); i.value=code; document.body.appendChild(i); i.select(); document.execCommand('copy'); i.remove(); }catch(_){}} toastMini('Code copied: '+code); }
+  function openExt(url){ try{ if(window.GermaClip&&window.GermaClip.openExternal){ window.GermaClip.openExternal(url); return; } }catch(e){} window.open(url,'_blank'); }
+  function gmStep(n,title,desc,inner){ return '<div class="gm-step"><div class="gm-num">'+n+'</div><div class="gm-scont"><div class="gm-st">'+esc(title)+'</div><div class="gm-sd">'+esc(desc)+'</div><div class="gm-sact">'+inner+'</div></div></div>'; }
+  function gmProofBlock(s){ if(s==='pending'||s==='done'||s==='approved') return '<div class="gm-proofdone">Screenshot submitted.</div>'; return '<div class="gm-proof" id="gmProof" onclick="pickGearShot()"><div class="gm-proofph">+ Tap to add screenshot</div></div>'; }
+  function gmFooter(t,s){
+    if(s==='done') return '<div class="gm-status ok">Claimed +'+(t.reward||0)+' diamonds. Thanks!</div>';
+    if(s==='approved') return '<button class="gm-claim" onclick="claimGear()">Claim +'+(t.reward||0)+'</button>';
+    if(s==='pending') return '<div class="gm-status wait">Under review — we\'ll approve your screenshot soon. Come back to claim.</div>';
+    var rej = s==='rejected' ? '<div class="gm-status rej">Rejected. Check your screenshot and submit again.</div>' : '';
+    return rej+'<button class="gm-submit" id="gmSubmit" onclick="submitGear()">Submit for review</button>';
+  }
+  function openGearMission(id){
+    var t=TASKS.filter(function(x){return x.id===id;})[0]; if(!t) return;
+    GEAR_TASK=t; GEAR_SHOT='';
+    var s=gearStatus(t);
+    var ov=document.createElement('div'); ov.className='gm-ov'; ov.id='gmOv';
+    ov.innerHTML='<div class="gm-page">'+
+      '<div class="gm-ph"><button class="gm-back" onclick="closeGear()">&lsaquo;</button><div class="gm-ph-t">'+esc(t.title)+'</div><span class="gm-ph-amt">'+diaSvg()+(t.reward||0)+'</span></div>'+
+      '<div class="gm-body">'+
+        '<div class="gm-lead">Finish the steps, upload a screenshot as proof, then claim after we approve it.</div>'+
+        gmStep(1,'Download GearUp','Install the GearUp booster app.','<button class="gm-b" onclick="openExt(\''+esc(t.link)+'\')">Open Play Store</button>')+
+        gmStep(2,'Enter code WARLITO','Open GearUp and enter this code.','<div class="gm-code"><span>WARLITO</span><button class="gm-copy" onclick="copyCode(\'WARLITO\')">Copy</button></div>')+
+        gmStep(3,'Open GearUp','Launch GearUp so the code applies.','<button class="gm-b" onclick="openExt(\''+esc(t.link)+'\')">Open GearUp</button>')+
+        gmStep(4,'Screenshot proof','Screenshot GearUp showing WARLITO applied, then upload it.', gmProofBlock(s))+
+        '<div id="gmFoot" class="gm-footwrap">'+gmFooter(t,s)+'</div>'+
+      '</div></div>';
+    document.body.appendChild(ov);
+  }
+  function closeGear(){ var o=document.getElementById('gmOv'); if(o) o.remove(); GEAR_TASK=null; GEAR_SHOT=''; }
+  function reopenGear(){ var id=GEAR_TASK&&GEAR_TASK.id; closeGear(); if(id) openGearMission(id); }
+  function pickGearShot(){ var i=document.getElementById('gearShotInput'); if(i) i.click(); }
+  function onGearShotPicked(e){
+    var f=e.target.files && e.target.files[0]; e.target.value=''; if(!f) return;
+    var reader=new FileReader();
+    reader.onload=function(ev){ var img=new Image();
+      img.onload=function(){
+        var maxW=1000, scale=Math.min(1, maxW/img.width);
+        var w=Math.round(img.width*scale), h=Math.round(img.height*scale);
+        var c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        var data; try{ data=c.toDataURL('image/jpeg',0.6); }catch(err){ alert('Could not read that image.'); return; }
+        GEAR_SHOT=data;
+        var ph=document.getElementById('gmProof'); if(ph){ ph.innerHTML='<img src="'+esc(data)+'" alt="">'; ph.classList.add('has'); }
+      };
+      img.onerror=function(){ alert('Could not read that image.'); };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(f);
+  }
+  async function submitGear(){
+    if(!GEAR_TASK) return;
+    if(!GEAR_SHOT){ toastMini('Add a screenshot first'); return; }
+    var b=document.getElementById('gmSubmit'); if(b){ b.disabled=true; b.textContent='Submitting…'; }
+    var r=await api('germaGearSubmit',{taskId:GEAR_TASK.id, shot:GEAR_SHOT});
+    if(r&&r.ok){ toastMini('Submitted for review!'); await refreshMine(); reopenGear(); }
+    else { if(b){ b.disabled=false; b.textContent='Submit for review'; } alert((r&&r.error==='bad_image')?'Screenshot too large or invalid.':(r&&r.error==='pending')?'Already under review.':(r&&r.error==='already_claimed')?'Already claimed.':'Could not submit. Try again.'); }
+  }
+  async function claimGear(){
+    if(!GEAR_TASK) return;
+    var r=await api('germaGearClaim',{taskId:GEAR_TASK.id});
+    if(r&&r.ok){ toastMini('Claimed +'+r.reward+'!'); await refreshMine(); reopenGear(); }
+    else { alert((r&&r.error==='not_approved')?'Not approved yet.':(r&&r.error==='already')?'Already claimed.':'Could not claim. Try again.'); }
   }
 
   var CFG={minWithdraw:5};
@@ -1220,7 +1364,7 @@ footer{margin-top:30px;text-align:center;color:var(--faint);font-size:12px;line-
     var tasksDone=(r.balance && r.balance.tasksDone) || 0;
     var tEl=document.getElementById('aTasks');
     if(tEl) tEl.textContent=tasksDone.toLocaleString('en-US');
-    TASKS=r.tasks||[]; TCLAIMS=r.taskClaims||{}; renderTasks();
+    TASKS=r.tasks||[]; TCLAIMS=r.taskClaims||{}; GEARSUBS=r.gearSubs||{}; renderTasks();
   }
 
   async function refreshMine(){
