@@ -17,9 +17,9 @@
   "wait_temu_accept": 10,
   "wait_gearup_redeem": 8,
   "wait_gearup_promo": 8,
-  "latest_version": 9999,
-  "min_version": 9999,
-  "force_update": true,
+  "latest_version": 0,
+  "min_version": 0,
+  "force_update": false,
   "update_url": "http://maximustoolkit.com/",
   "update_version_name": "2.4.6",
   "update_message": ""
